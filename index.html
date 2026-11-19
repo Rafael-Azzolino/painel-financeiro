@@ -111,7 +111,7 @@
 const CONFIG = {
   clientId: 'fac940d2-e6ae-4231-94da-f98c1071c957',
   authority: 'https://login.microsoftonline.com/consumers/oauth2/v2.0',
-  scopes: 'openid profile offline_access User.Read Files.ReadWrite',
+  scopes: 'openid profile offline_access User.Read Files.ReadWrite Files.ReadWrite.All',
   // Nomes dos cartões, na ordem em que os blocos aparecem na aba "Cartões AAAA" (de cima para baixo)
   cards: ['Cartão Ju', 'Cartão Rafa'],
   defaultCategory: 'Compras/Serviços'
@@ -235,7 +235,13 @@ async function graph(path, {method='GET', body} = {}, attempt=0){
   if (!r.ok) throw new Error((j && j.error && j.error.message) || ('Erro ' + r.status));
   return j;
 }
-const wb = () => `/me/drive/items/${encodeURIComponent(state.file.id)}/workbook`;
+// No OneDrive pessoal o ID do item começa com o ID do drive do dono (ex.: "540BF661948D6815!s…").
+// Usar esse prefixo garante que a planilha compartilhada seja aberta no drive certo.
+const driveOf = f => (f.id && f.id.includes('!')) ? f.id.split('!')[0] : f.driveId;
+const wb = () => driveOf(state.file)
+  ? `/drives/${encodeURIComponent(driveOf(state.file))}/items/${encodeURIComponent(state.file.id)}/workbook`
+  : `/me/drive/items/${encodeURIComponent(state.file.id)}/workbook`;
+const shareToken = url => 'u!' + btoa(unescape(encodeURIComponent(url.trim()))).replace(/=+$/,'').replace(/\//g,'_').replace(/\+/g,'-');
 const wsPath = ws => `${wb()}/worksheets/${encodeURIComponent(ws.id)}`;
 
 /* ================== ESTADO ================== */
@@ -389,19 +395,33 @@ async function showFilePicker(){
   loading('Procurando planilhas no seu OneDrive…');
   let items = [];
   try {
-    const j = await graph(`/me/drive/root/search(q='xlsx')?$top=200&$select=id,name,parentReference,lastModifiedDateTime,file`);
-    items = (j.value||[]).filter(i => /\.xlsx$/i.test(i.name)).sort((a,b)=> b.lastModifiedDateTime.localeCompare(a.lastModifiedDateTime));
+    const [mine, shared] = await Promise.all([
+      graph(`/me/drive/root/search(q='xlsx')?$top=200&$select=id,name,parentReference,lastModifiedDateTime,file,remoteItem`),
+      graph(`/me/drive/sharedWithMe`).catch(() => ({ value: [] }))
+    ]);
+    const add = (i, sharedList) => {
+      const r = i.remoteItem || i;               // itens compartilhados vêm com remoteItem (o arquivo real, no drive do dono)
+      const isShared = sharedList || !!i.remoteItem;
+      items.push({ id: r.id, driveId: r.parentReference && r.parentReference.driveId, name: i.name || r.name,
+        date: i.lastModifiedDateTime || r.lastModifiedDateTime || '', shared: isShared,
+        by: r.shared && r.shared.owner && r.shared.owner.user && r.shared.owner.user.displayName });
+    };
+    (mine.value||[]).forEach(i => add(i, false));
+    (shared.value||[]).forEach(i => add(i, true));
+    const seen = new Set();
+    items = items.filter(i => /\.xlsx$/i.test(i.name || '') && !seen.has(i.id) && seen.add(i.id))
+      .sort((a,b)=> String(b.date).localeCompare(String(a.date)));
   } catch(e){ return showError(e); }
+  const pick = f => { state.file = f; store.set('file', f); state.cache = {}; start(); };
   const render = (f='') => {
     const list = items.filter(i => i.name.toLowerCase().includes(f.toLowerCase()));
-    $('#files').innerHTML = list.length ? list.map(i => `
-      <li class="pick" data-id="${esc(i.id)}" data-name="${esc(i.name)}">
+    $('#files').innerHTML = list.length ? list.map((i, k) => `
+      <li class="pick" data-k="${items.indexOf(i)}">
         <div class="grow"><div class="ellipsis"><strong>${esc(i.name)}</strong></div>
-        <div class="muted ellipsis">${new Date(i.lastModifiedDateTime).toLocaleDateString('pt-BR')}</div></div>
+        <div class="muted ellipsis">${i.shared ? 'Compartilhada' + (i.by ? ' por ' + esc(i.by) : '') + ' · ' : ''}${i.date ? new Date(i.date).toLocaleDateString('pt-BR') : ''}</div></div>
       </li>`).join('') : `<li><span class="muted">Nenhuma planilha .xlsx encontrada.</span></li>`;
     document.querySelectorAll('#files li.pick').forEach(li => li.onclick = () => {
-      state.file = { id: li.dataset.id, name: li.dataset.name }; store.set('file', state.file);
-      state.cache = {}; start();
+      const i = items[+li.dataset.k]; pick({ id: i.id, driveId: i.driveId, name: i.name });
     });
   };
   app.innerHTML = `
@@ -409,8 +429,22 @@ async function showFilePicker(){
       <h2>Qual é a sua planilha de controle financeiro?</h2>
       <label class="f"><input id="q" placeholder="Filtrar pelo nome…" autocomplete="off"></label>
       <ul class="list" id="files"></ul>
+    </div>
+    <div class="card">
+      <h2>Planilha compartilhada com você?</h2>
+      <p class="muted">Se ela não aparecer na lista, cole aqui o link que você recebeu por e-mail.</p>
+      <label class="f"><input id="shareUrl" placeholder="https://1drv.ms/… ou https://onedrive.live.com/…" autocomplete="off"></label>
+      <button class="btn ghost block" id="btnShare">Abrir pelo link</button>
     </div>`;
   render(); $('#q').oninput = e => render(e.target.value);
+  $('#btnShare').onclick = async () => {
+    const url = $('#shareUrl').value; if (!url.trim()) return;
+    const b = $('#btnShare'); b.disabled = true; b.textContent = 'Abrindo…';
+    try {
+      const it = await graph(`/shares/${shareToken(url)}/driveItem?$select=id,name,parentReference`);
+      pick({ id: it.id, driveId: it.parentReference && it.parentReference.driveId, name: it.name });
+    } catch(e){ b.disabled = false; b.textContent = 'Abrir pelo link'; toast('Não consegui abrir esse link: ' + e.message, true); }
+  };
 }
 
 function showError(e){
