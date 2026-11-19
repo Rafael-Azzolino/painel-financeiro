@@ -116,7 +116,7 @@ const CONFIG = {
   cards: ['Cartão Ju', 'Cartão Rafa'],
   defaultCategory: 'Compras/Serviços'
 };
-const REDIRECT_URI = location.origin + location.pathname.replace(/index\.html$/i, '');
+const REDIRECT_URI = location.origin + location.pathname.replace(/index\.html$/i, '').replace(/([^/])$/, '$1/');
 const GRAPH = 'https://graph.microsoft.com/v1.0';
 
 /* ================== UTILITÁRIOS ================== */
@@ -177,6 +177,10 @@ function b64url(bytes){ return btoa(String.fromCharCode(...new Uint8Array(bytes)
 function randomStr(n){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
 
 async function login(){
+  if (location.protocol === 'file:'){
+    alert('Este arquivo foi aberto direto do computador. Abra pelo endereço do GitHub Pages: https://rafael-azzolino.github.io/painel-financeiro/');
+    return;
+  }
   const verifier = randomStr(48), st = randomStr(16);
   sess.set('pkce', verifier); sess.set('state', st);
   const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
