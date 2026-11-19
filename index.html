@@ -23,7 +23,7 @@
   html,body{margin:0;background:var(--bg);color:var(--ink);
     font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   header{position:sticky;top:0;z-index:5;background:#14213d;color:#fff;
-    padding:14px 18px calc(14px);display:flex;align-items:center;gap:12px}
+    padding:14px 18px;display:flex;align-items:center;gap:12px}
   header h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px;flex:1}
   header .who{font-size:13px;opacity:.8}
   header button{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;
@@ -40,47 +40,51 @@
   .btn.block{width:100%}
   .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
   .btn:disabled{opacity:.55;cursor:default}
-  .tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);
+  .seg{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);
     border-radius:12px;padding:4px;margin-bottom:14px}
-  .tabs button{flex:1;border:0;background:transparent;color:var(--ink-2);font:inherit;
-    font-weight:600;padding:10px;border-radius:9px;cursor:pointer}
-  .tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+  .seg button{flex:1;border:0;background:transparent;color:var(--ink-2);font:inherit;
+    font-weight:600;padding:10px 6px;border-radius:9px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+  .card .seg{background:var(--bg)}
   label.f{display:block;margin-bottom:14px}
-  label.f span{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+  .f > span{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
   input,select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--surface);
     border:1px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
   input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
-  input.money{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  input.money{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
   .chip{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
-    border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+    border-radius:999px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer}
   .chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
-  .calc{font-size:13px;color:var(--muted);margin:-6px 0 14px}
+  .check{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:14px;color:var(--ink-2)}
+  .check input{width:20px;height:20px;min-height:0}
+  .preview{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:14px}
   .list{list-style:none;margin:0;padding:0}
-  .list li{display:flex;align-items:center;gap:10px;padding:12px 4px;border-top:1px solid var(--line)}
+  .list li{display:flex;align-items:center;gap:10px;padding:11px 4px;border-top:1px solid var(--line)}
   .list li:first-child{border-top:0}
   .list li.pick{cursor:pointer;border-radius:10px}
   .list li.pick:hover{background:var(--accent-soft)}
   .grow{flex:1;min-width:0}
   .ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .num{font-variant-numeric:tabular-nums;white-space:nowrap}
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
   .tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
   .tile .k{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
-  .tile .v{font-size:24px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+  .tile .v{font-size:22px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
   .tile .d{font-size:12px;color:var(--muted);margin-top:2px}
   .monthnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .monthnav strong{font-size:17px;text-transform:capitalize}
   .monthnav button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);
     background:var(--surface);color:var(--ink);font-size:18px;cursor:pointer}
-  .bars .row{display:grid;grid-template-columns:minmax(90px,34%) 1fr auto;gap:10px;align-items:center;padding:7px 0}
-  .bars .track{height:12px;border-radius:0 4px 4px 0;background:transparent;position:relative}
+  .bars .row{display:grid;grid-template-columns:minmax(100px,36%) 1fr auto;gap:10px;align-items:center;padding:7px 0}
+  .bars .track{height:12px}
   .bars .fill{height:100%;background:var(--bar);border-radius:0 4px 4px 0;min-width:2px}
   .bars .lbl{font-size:14px}
   .bars .val{font-size:13px;color:var(--ink-2)}
   .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;
     background:#14213d;color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;
-    transition:.25s;z-index:20;max-width:90vw;text-align:center}
+    transition:.25s;z-index:20;max-width:90vw;text-align:center;pointer-events:none}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.err{background:var(--bad)}
   .err-box{background:#fdecea;color:#7a1a12;border-radius:10px;padding:12px;font-size:14px;margin-bottom:12px;word-break:break-word}
@@ -107,7 +111,10 @@
 const CONFIG = {
   clientId: 'fac940d2-e6ae-4231-94da-f98c1071c957',
   authority: 'https://login.microsoftonline.com/consumers/oauth2/v2.0',
-  scopes: 'openid profile offline_access User.Read Files.ReadWrite'
+  scopes: 'openid profile offline_access User.Read Files.ReadWrite',
+  // Nomes dos cartões, na ordem em que os blocos aparecem na aba "Cartões AAAA" (de cima para baixo)
+  cards: ['Cartão Ju', 'Cartão Rafa'],
+  defaultCategory: 'Compras/Serviços'
 };
 const REDIRECT_URI = location.origin + location.pathname.replace(/index\.html$/i, '');
 const GRAPH = 'https://graph.microsoft.com/v1.0';
@@ -128,71 +135,75 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const BRL = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'});
 const fmtBRL = n => BRL.format(n || 0);
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const MES3 = MESES.map(m => m.slice(0,3));
 const app = $('#app');
+const norm = s => String(s ?? '').trim().toLowerCase();
+const isBlank = v => v === '' || v == null || (typeof v === 'string' && !v.trim());
+const round2 = n => Math.round(n * 100) / 100;
 
 function toast(msg, isErr=false){
   const t = $('#toast'); t.textContent = msg; t.classList.toggle('err', isErr);
-  t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), isErr?5000:2200);
+  t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), isErr?6000:2600);
 }
 function loading(msg='Carregando…'){ app.innerHTML = `<div class="center"><div class="spinner"></div>${esc(msg)}</div>`; }
 
-/* Datas do Excel (número serial) <-> JS */
 const EXCEL_EPOCH = Date.UTC(1899, 11, 30);
-const isoToSerial = iso => { const [y,m,d] = iso.split('-').map(Number); return (Date.UTC(y,m-1,d) - EXCEL_EPOCH) / 864e5; };
-function cellToDate(v){
-  if (typeof v === 'number' && v > 20000 && v < 80000){ const d = new Date(EXCEL_EPOCH + Math.round(v)*864e5); return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); }
-  if (typeof v === 'string'){
-    let m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/); if (m){ let y=+m[3]; if(y<100) y+=2000; return new Date(y, +m[2]-1, +m[1]); }
-    m = v.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return new Date(+m[1], +m[2]-1, +m[3]);
-  }
-  return null;
+function serialToDate(v){
+  if (typeof v !== 'number' || v < 20000 || v > 80000) return null;
+  const d = new Date(EXCEL_EPOCH + Math.round(v)*864e5); return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
 }
 function parseNum(v){
   if (typeof v === 'number') return v;
-  if (v == null) return NaN;
+  if (isBlank(v)) return NaN;
   let s = String(v).replace(/R\$|\s/g,'').trim();
-  if (!s) return NaN;
   if (s.includes(',')) s = s.replace(/\./g,'').replace(',', '.');
   return Number(s);
 }
-const todayISO = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const numOr0 = v => { const n = parseNum(v); return isNaN(n) ? 0 : n; };
+const pad2 = n => String(n).padStart(2,'0');
+const todayISO = () => { const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; };
+const thisMonthISO = () => { const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; };
 
-/* ================== LOGIN (OAuth 2.0 + PKCE, sem bibliotecas) ================== */
+/* Endereços de célula */
+function colNum(s){ let n=0; for (const ch of s.toUpperCase()) n = n*26 + ch.charCodeAt(0) - 64; return n; }
+function colStr(n){ let s=''; while(n>0){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=Math.floor((n-1)/26); } return s; }
+function sumRange(formula){
+  const m = String(formula||'').match(/SUM\(\s*\$?[A-Z]+\$?(\d+)\s*:\s*\$?[A-Z]+\$?(\d+)\s*\)/i);
+  return m ? { r1:+m[1], r2:+m[2] } : null;
+}
+
+/* ================== LOGIN (OAuth 2.0 + PKCE) ================== */
 function b64url(bytes){ return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function randomStr(n){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
 
 async function login(){
-  const verifier = randomStr(48), state = randomStr(16);
-  sess.set('pkce', verifier); sess.set('state', state);
+  const verifier = randomStr(48), st = randomStr(16);
+  sess.set('pkce', verifier); sess.set('state', st);
   const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
   const p = new URLSearchParams({
     client_id: CONFIG.clientId, response_type: 'code', redirect_uri: REDIRECT_URI,
     scope: CONFIG.scopes, code_challenge: challenge, code_challenge_method: 'S256',
-    state, response_mode: 'query', prompt: 'select_account'
+    state: st, response_mode: 'query', prompt: 'select_account'
   });
   location.assign(`${CONFIG.authority}/authorize?${p}`);
 }
-
 async function tokenRequest(params){
   const body = new URLSearchParams({ client_id: CONFIG.clientId, scope: CONFIG.scopes, ...params });
   const r = await fetch(`${CONFIG.authority}/token`, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body });
   const j = await r.json().catch(()=>({}));
   if (!r.ok) throw new Error(j.error_description || j.error || ('Falha no login ('+r.status+')'));
-  const tok = { access: j.access_token, refresh: j.refresh_token || store.get('tok',{}).refresh, exp: Date.now() + (j.expires_in||3600)*1000 };
+  const tok = { access: j.access_token, refresh: j.refresh_token || (store.get('tok',{})||{}).refresh, exp: Date.now() + (j.expires_in||3600)*1000 };
   store.set('tok', tok); return tok;
 }
-
 async function handleRedirect(){
   const q = new URLSearchParams(location.search);
   if (!q.has('code') && !q.has('error')) return null;
   history.replaceState(null, '', REDIRECT_URI);
   if (q.has('error')) throw new Error(q.get('error_description') || q.get('error'));
-  if (q.get('state') !== sess.get('state')) throw new Error('Retorno de login inválido (state). Tente entrar de novo.');
+  if (q.get('state') !== sess.get('state')) throw new Error('Retorno de login inválido. Tente entrar de novo.');
   const tok = await tokenRequest({ grant_type:'authorization_code', code:q.get('code'), redirect_uri:REDIRECT_URI, code_verifier:sess.get('pkce') });
-  sess.del('pkce'); sess.del('state');
-  return tok;
+  sess.del('pkce'); sess.del('state'); return tok;
 }
-
 async function getToken(force=false){
   const tok = store.get('tok');
   if (!tok) throw new Error('LOGIN');
@@ -201,7 +212,6 @@ async function getToken(force=false){
   try { return (await tokenRequest({ grant_type:'refresh_token', refresh_token: tok.refresh })).access; }
   catch(e){ store.del('tok'); throw new Error('LOGIN'); }
 }
-
 function logout(){ store.del('tok'); store.del('me'); location.assign(`${CONFIG.authority}/logout?post_logout_redirect_uri=${encodeURIComponent(REDIRECT_URI)}`); }
 
 /* ================== MICROSOFT GRAPH ================== */
@@ -222,18 +232,142 @@ async function graph(path, {method='GET', body} = {}, attempt=0){
   return j;
 }
 const wb = () => `/me/drive/items/${encodeURIComponent(state.file.id)}/workbook`;
-const tbl = () => `${wb()}/tables/${encodeURIComponent(state.table.id)}`;
+const wsPath = ws => `${wb()}/worksheets/${encodeURIComponent(ws.id)}`;
 
 /* ================== ESTADO ================== */
+const now = new Date();
 const state = {
-  file: store.get('file'),      // {id, name}
-  table: store.get('table'),    // {id, name}
-  model: null,                  // colunas + linhas
+  file: store.get('file'),
+  sheets: [],                 // [{id,name}]
+  cache: {},                  // nome da aba -> dados interpretados
   tab: 'lancar',
-  month: (()=>{ const d=new Date(); return {y:d.getFullYear(), m:d.getMonth()}; })()
+  dest: store.get('dest', 'conta'),   // 'conta' | 0 | 1 (índice do cartão)
+  month: { y: now.getFullYear(), m: now.getMonth() }
 };
 
-/* ================== TELAS ================== */
+/* ================== LEITURA DAS ABAS ================== */
+const sheetFor = (kind, year) => state.sheets.find(s => kind === 'controle'
+  ? new RegExp(`^controle\\s+${year}$`, 'i').test(s.name.trim())
+  : new RegExp(`^cart(o|õ)es\\s+${year}$`, 'i').test(s.name.trim()));
+
+function makeGrid(range){
+  const ref = range.address.split('!').pop();
+  const m = ref.match(/^\$?([A-Z]+)\$?(\d+)/);
+  const c0 = colNum(m[1]), r0 = +m[2];
+  const V = range.values, F = range.formulas;
+  return {
+    r0, c0, rMax: r0 + V.length - 1, cMax: c0 + (V[0]||[]).length - 1,
+    v: (r,c) => { const row = V[r-r0]; return row && row[c-c0] != null ? row[c-c0] : ''; },
+    f: (r,c) => { const row = F[r-r0]; return row && row[c-c0] != null ? row[c-c0] : ''; }
+  };
+}
+
+function findBlocks(g, check){
+  for (let r = g.r0; r <= Math.min(g.r0 + 6, g.rMax); r++){
+    const blocks = [];
+    for (let c = g.c0; c <= g.cMax; c++){
+      if (norm(g.v(r,c)) === 'data' && /descri/i.test(g.v(r,c+1)) && check(r,c)) blocks.push(c);
+    }
+    if (blocks.length) return { hr: r, blocks };
+  }
+  return null;
+}
+function blockMonth(g, hr, c, idx){
+  for (let r = hr-1; r >= Math.max(g.r0, hr-2); r--){ const d = serialToDate(g.v(r,c)); if (d) return d.getMonth(); }
+  return idx;
+}
+function firstFree(g, r1, r2, cols){
+  for (let r = r1; r <= r2; r++) if (cols.every(c => isBlank(g.v(r,c)))) return r;
+  return null;
+}
+
+function parseControle(g){
+  const h = findBlocks(g, (r,c) => /valor/i.test(g.v(r,c+3)));
+  if (!h) throw new Error('Não encontrei os cabeçalhos DATA / Descrição / Categoria / Valor na aba de controle.');
+  const months = {};
+  h.blocks.forEach((c, idx) => {
+    const m = blockMonth(g, h.hr, c, idx);
+    let tr = null, ar = null;
+    for (let r = h.hr+1; r <= g.rMax; r++){
+      const t = norm(g.v(r,c));
+      if (tr == null && /^total m[eê]s/.test(t)) tr = r;
+      else if (tr != null && t === 'total'){ ar = r; break; }
+    }
+    const rg = (tr && sumRange(g.f(tr, c+3))) || { r1: h.hr+1, r2: (tr || g.rMax+1) - 1 };
+    const items = [];
+    for (let r = rg.r1; r <= rg.r2; r++){
+      const desc = String(g.v(r,c+1)).trim(), val = g.v(r,c+3);
+      if (desc || !isBlank(val)) items.push({ r, day: g.v(r,c), desc, cat: String(g.v(r,c+2)).trim(), val: numOr0(val) });
+    }
+    months[m] = { c, r1: rg.r1, r2: rg.r2, items,
+      free: firstFree(g, rg.r1, rg.r2, [c+1, c+2, c+3]),
+      total: tr ? numOr0(g.v(tr, c+3)) : items.reduce((s,i)=>s+i.val,0),
+      acc: ar ? numOr0(g.v(ar, c+3)) : null };
+  });
+  return { kind:'controle', months };
+}
+
+function parseCartoes(g){
+  const h = findBlocks(g, (r,c) => /categ/i.test(g.v(r,c+3)) && /valor/i.test(g.v(r,c+4)));
+  if (!h) throw new Error('Não encontrei os cabeçalhos DATA / Descrição / Categoria / Valor na aba de cartões.');
+  const months = {};
+  h.blocks.forEach((c, idx) => {
+    const m = blockMonth(g, h.hr, c, idx);
+    const totals = [];
+    for (let r = h.hr+1; r <= g.rMax; r++) if (norm(g.v(r,c)) === 'total' || norm(g.v(r,c+1)) === 'total') totals.push(r);
+    let prevEnd = h.hr;
+    const sections = totals.map((tr, i) => {
+      const rg = sumRange(g.f(tr, c+4)) || { r1: prevEnd+1, r2: tr-1 };
+      prevEnd = tr;
+      const items = [];
+      for (let r = rg.r1; r <= rg.r2; r++){
+        const desc = String(g.v(r,c+1)).trim(), val = g.v(r,c+4);
+        if (norm(desc) === 'descrição' || norm(desc) === 'descricao') continue;
+        if (desc || !isBlank(val)) items.push({ r, desc, parc: String(g.v(r,c+2)).trim(), cat: String(g.v(r,c+3)).trim(), val: numOr0(val) });
+      }
+      return { name: CONFIG.cards[i] || `Cartão ${i+1}`, r1: rg.r1, r2: rg.r2, items,
+        free: firstFree(g, rg.r1, rg.r2, [c+1, c+2, c+3, c+4]), total: numOr0(g.v(tr, c+4)) };
+    });
+    months[m] = { c, sections };
+  });
+  return { kind:'cartoes', months };
+}
+
+async function loadSheet(kind, year, force=false){
+  const ws = sheetFor(kind, year);
+  if (!ws) return null;
+  if (state.cache[ws.name] && !force) return state.cache[ws.name];
+  const range = await graph(`${wsPath(ws)}/usedRange?$select=address,values,formulas`);
+  const g = makeGrid(range);
+  const parsed = kind === 'controle' ? parseControle(g) : parseCartoes(g);
+  parsed.ws = ws; parsed.year = year;
+  state.cache[ws.name] = parsed;
+  return parsed;
+}
+async function writeRow(ws, c1, c2, r, values){
+  const addr = `${colStr(c1)}${r}:${colStr(c2)}${r}`;
+  await graph(`${wsPath(ws)}/range(address='${addr}')`, { method:'PATCH', body:{ values:[values] } });
+}
+
+/* Sugestões para o formulário */
+function suggestions(){
+  const descs = {}, contaCats = new Set(), cardCats = new Set();
+  Object.values(state.cache).forEach(s => Object.values(s.months).forEach(mo => {
+    const items = s.kind === 'controle' ? mo.items : mo.sections.flatMap(x => x.items);
+    items.forEach(i => {
+      if (i.desc) descs[i.desc] = (descs[i.desc]||0) + 1;
+      if (i.cat) (s.kind === 'controle' ? contaCats : cardCats).add(i.cat);
+    });
+  }));
+  const fix = set => { const a = [...set].filter(c => c !== 'compras/Serviços'); if (!a.includes(CONFIG.defaultCategory)) a.unshift(CONFIG.defaultCategory); return a; };
+  return {
+    descs: Object.keys(descs).sort((a,b) => descs[b]-descs[a]).slice(0, 300),
+    contaCats: fix(contaCats).sort((a,b) => a === CONFIG.defaultCategory ? -1 : b === CONFIG.defaultCategory ? 1 : a.localeCompare(b)),
+    cardCats: fix(cardCats).sort((a,b) => a === CONFIG.defaultCategory ? -1 : b === CONFIG.defaultCategory ? 1 : a.localeCompare(b))
+  };
+}
+
+/* ================== TELAS DE ACESSO ================== */
 function showLogin(errMsg){
   $('#btnSettings').classList.add('hidden'); $('#who').textContent = '';
   app.innerHTML = `
@@ -242,7 +376,7 @@ function showLogin(errMsg){
       ${errMsg ? `<div class="err-box">${esc(errMsg)}</div>` : ''}
       <p>Entre com a sua conta Microsoft pessoal (a mesma do OneDrive onde está a planilha).</p>
       <button class="btn block" id="btnLogin">Entrar com Microsoft</button>
-      <p class="muted" style="margin-top:14px">Endereço deste painel (precisa estar cadastrado no Azure como URI de redirecionamento SPA):<br><code>${esc(REDIRECT_URI)}</code></p>
+      <p class="muted" style="margin-top:14px">Endereço deste painel (cadastrado no Azure como URI de redirecionamento SPA):<br><code>${esc(REDIRECT_URI)}</code></p>
     </div>`;
   $('#btnLogin').onclick = login;
 }
@@ -259,11 +393,11 @@ async function showFilePicker(){
     $('#files').innerHTML = list.length ? list.map(i => `
       <li class="pick" data-id="${esc(i.id)}" data-name="${esc(i.name)}">
         <div class="grow"><div class="ellipsis"><strong>${esc(i.name)}</strong></div>
-        <div class="muted ellipsis">${esc((i.parentReference && i.parentReference.path || '').replace(/^\/drive\/root:?/,'') || '/')} · ${new Date(i.lastModifiedDateTime).toLocaleDateString('pt-BR')}</div></div>
+        <div class="muted ellipsis">${new Date(i.lastModifiedDateTime).toLocaleDateString('pt-BR')}</div></div>
       </li>`).join('') : `<li><span class="muted">Nenhuma planilha .xlsx encontrada.</span></li>`;
     document.querySelectorAll('#files li.pick').forEach(li => li.onclick = () => {
       state.file = { id: li.dataset.id, name: li.dataset.name }; store.set('file', state.file);
-      state.table = null; store.del('table'); showTablePicker();
+      state.cache = {}; start();
     });
   };
   app.innerHTML = `
@@ -275,189 +409,156 @@ async function showFilePicker(){
   render(); $('#q').oninput = e => render(e.target.value);
 }
 
-async function showTablePicker(){
-  loading('Lendo a planilha…');
-  let tables, sheets;
-  try {
-    [tables, sheets] = await Promise.all([ graph(`${wb()}/tables`), graph(`${wb()}/worksheets`) ]);
-    tables = tables.value || []; sheets = sheets.value || [];
-  } catch(e){ return showError(e); }
-
-  if (tables.length === 1 && !state._forcePick){ return pickTable(tables[0]); }
-
-  const ranges = await Promise.all(sheets.map(s =>
-    graph(`${wb()}/worksheets/${encodeURIComponent(s.id)}/usedRange(valuesOnly=true)?$select=address`).catch(()=>null)));
-
-  app.innerHTML = `
-    <div class="card">
-      <h2>${esc(state.file.name)}</h2>
-      ${tables.length ? `
-        <p>Escolha a tabela onde ficam os lançamentos:</p>
-        <ul class="list" id="tables">${tables.map(t => `<li class="pick" data-id="${esc(t.id)}" data-name="${esc(t.name)}"><div class="grow"><strong>${esc(t.name)}</strong></div><span class="muted">›</span></li>`).join('')}</ul>`
-      : `<p>Essa planilha ainda não tem nenhuma <strong>Tabela do Excel</strong>. O painel grava os lançamentos numa tabela, então vamos transformar a aba dos lançamentos em tabela. A primeira linha do intervalo precisa ser a dos títulos das colunas (Data, Descrição, Valor…).</p>`}
-    </div>
-    <div class="card">
-      <h2>${tables.length ? 'Ou crie uma tabela a partir de uma aba' : 'Transformar uma aba em tabela'}</h2>
-      <ul class="list">${sheets.map((s,i) => `
-        <li><div class="grow">
-          <strong>${esc(s.name)}</strong>
-          <label class="f" style="margin:8px 0 0"><span>Intervalo (com a linha de títulos)</span>
-            <input data-sheet="${i}" value="${esc(ranges[i] && ranges[i].address ? ranges[i].address.split('!').pop() : 'A1:F2')}"></label>
-          <button class="btn ghost" data-mk="${i}" style="margin-top:8px">Criar tabela nesta aba</button>
-        </div></li>`).join('')}</ul>
-      <p class="muted" style="margin-top:10px">Dica: se preferir, faça no Excel Online — selecione os dados e use <strong>Ctrl+T</strong> (marcando "Minha tabela tem cabeçalhos").</p>
-    </div>
-    <button class="btn ghost block" id="btnOtherFile">Escolher outra planilha</button>`;
-
-  document.querySelectorAll('#tables li.pick').forEach(li => li.onclick = () => pickTable({ id: li.dataset.id, name: li.dataset.name }));
-  document.querySelectorAll('[data-mk]').forEach(b => b.onclick = async () => {
-    const i = +b.dataset.mk, sheet = sheets[i];
-    const addr = document.querySelector(`[data-sheet="${i}"]`).value.trim();
-    b.disabled = true; b.textContent = 'Criando…';
-    try {
-      const t = await graph(`${wb()}/tables/add`, { method:'POST', body:{ address: `'${sheet.name.replace(/'/g,"''")}'!${addr}`, hasHeaders: true } });
-      try { await graph(`${wb()}/tables/${encodeURIComponent(t.id)}`, { method:'PATCH', body:{ name:'Lancamentos' } }); t.name='Lancamentos'; } catch(_){}
-      toast('Tabela criada'); pickTable(t);
-    } catch(e){ b.disabled=false; b.textContent='Criar tabela nesta aba'; toast(e.message, true); }
-  });
-  $('#btnOtherFile').onclick = () => { state._forcePick = false; showFilePicker(); };
-}
-
-function pickTable(t){
-  state._forcePick = false;
-  state.table = { id: t.id, name: t.name }; store.set('table', state.table);
-  loadModel().then(renderMain).catch(showError);
-}
-
 function showError(e){
   if (e && e.message === 'LOGIN') return showLogin();
   app.innerHTML = `<div class="card"><h2>Algo deu errado</h2><div class="err-box">${esc(e && e.message || e)}</div>
     <div class="row-actions"><button class="btn" id="retry">Tentar de novo</button><button class="btn ghost" id="reset">Escolher outra planilha</button></div></div>`;
   $('#retry').onclick = () => boot();
-  $('#reset').onclick = () => { store.del('file'); store.del('table'); state.file=null; state.table=null; showFilePicker(); };
-}
-
-/* ================== MODELO: lê a tabela e entende as colunas ================== */
-const RX = {
-  date: /data|date|^dia$|venc|compet[eê]ncia/i,
-  value:/valor|pre[cç]o|total|quantia|montante|amount|gasto|r\$/i,
-  cat:  /categ|grupo|classifica/i,
-  type: /tipo|natureza|movimenta|entrada|sa[ií]da|receita\/despesa/i,
-  desc: /descri|item|hist[oó]rico|estabelec|onde|loja|obs|detalhe|nome/i,
-  income:/receita|entrada|cr[eé]dito|ganho|sal[aá]rio|renda|recebi/i
-};
-const isDateFmt = f => typeof f === 'string' && /d/i.test(f) && /(y|a)/i.test(f) && !/0/.test(f);
-
-async function loadModel(){
-  const [meta, range] = await Promise.all([ graph(tbl()), graph(`${tbl()}/range`) ]);
-  const vals = range.values, fR1C1 = range.formulasR1C1 || range.formulas, nf = range.numberFormat, vt = range.valueTypes;
-  const headers = vals[0].map(h => String(h).trim());
-  let last = vals.length; if (meta.showTotals) last--;
-  const bodyIdx = []; for (let r=1; r<last; r++) if (vals[r].some(v => v !== '' && v != null)) bodyIdx.push(r);
-  const lastRow = bodyIdx.length ? bodyIdx[bodyIdx.length-1] : null;
-
-  const cols = headers.map((h, c) => {
-    const values = bodyIdx.map(r => vals[r][c]).filter(v => v !== '' && v != null);
-    const numeric = bodyIdx.filter(r => vt[r][c] === 'Double').length;
-    const formula = lastRow != null && typeof fR1C1[lastRow][c] === 'string' && fR1C1[lastRow][c].startsWith('=') ? fR1C1[lastRow][c] : null;
-    const fmt = lastRow != null ? nf[lastRow][c] : (nf[1] && nf[1][c]);
-    let kind = 'text';
-    if (RX.date.test(h) || (numeric && isDateFmt(fmt))) kind = 'date';
-    else if (RX.value.test(h) || (values.length && numeric / values.length >= 0.8)) kind = 'number';
-    const freq = {}; if (kind === 'text') values.forEach(v => { const s=String(v).trim(); if (s) freq[s]=(freq[s]||0)+1; });
-    const options = Object.keys(freq).sort((a,b)=> freq[b]-freq[a]);
-    return { i:c, name: h || `Coluna ${c+1}`, kind, formula, options };
-  });
-
-  const find = (rx, kind) => cols.find(c => !c.formula && rx.test(c.name) && (!kind || c.kind === kind));
-  const roles = {
-    date: cols.find(c => c.kind === 'date'),
-    value: find(RX.value, 'number') || cols.find(c => c.kind === 'number'),
-    cat: find(RX.cat, 'text') || cols.find(c => c.kind==='text' && !c.formula && c.options.length >= 2 && c.options.length <= 25 && !RX.type.test(c.name) && !RX.desc.test(c.name)),
-    type: find(RX.type, 'text'),
-  };
-  roles.desc = find(RX.desc, 'text') || cols.find(c => c.kind==='text' && !c.formula && c !== roles.cat && c !== roles.type);
-  if (roles.type && !roles.type.options.some(o => RX.income.test(o))) roles.type = null;
-
-  const rows = bodyIdx.map(r => vals[r]);
-  state.model = { headers, cols, roles, rows, tableName: meta.name };
-  return state.model;
+  $('#reset').onclick = () => { store.del('file'); state.file=null; showFilePicker(); };
 }
 
 /* ================== TELA PRINCIPAL ================== */
 function renderMain(){
   $('#btnSettings').classList.remove('hidden');
   app.innerHTML = `
-    <div class="tabs" role="tablist">
-      <button role="tab" data-tab="lancar" aria-selected="${state.tab==='lancar'}">Lançar</button>
-      <button role="tab" data-tab="resumo" aria-selected="${state.tab==='resumo'}">Resumo</button>
+    <div class="seg" role="tablist">
+      <button data-tab="lancar" aria-pressed="${state.tab==='lancar'}">Lançar</button>
+      <button data-tab="resumo" aria-pressed="${state.tab==='resumo'}">Resumo do mês</button>
     </div>
     <div id="view"></div>`;
   document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; renderMain(); });
   state.tab === 'lancar' ? renderForm() : renderSummary();
 }
 
-function renderForm(){
-  const { cols, roles } = state.model;
-  const ordered = [...cols].sort((a,b) => (a===roles.value? -1 : b===roles.value ? 1 : 0)); // valor primeiro
-  const fields = ordered.map(c => {
-    if (c.formula) return `<div class="calc">${esc(c.name)}: calculado automaticamente pela planilha</div>`;
-    const id = 'c'+c.i;
-    if (c.kind === 'date') return `<label class="f"><span>${esc(c.name)}</span><input type="date" id="${id}" value="${todayISO()}"></label>`;
-    if (c.kind === 'number') return `<label class="f"><span>${esc(c.name)}</span><input id="${id}" inputmode="decimal" autocomplete="off" placeholder="0,00" class="${c===roles.value?'money':''}"></label>`;
-    const chips = c.options.length && c.options.length <= 14
-      ? `<div class="chips" data-for="${id}">${c.options.map(o => `<button type="button" class="chip" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>` : '';
-    const dl = c.options.length ? `<datalist id="dl${c.i}">${c.options.slice(0,60).map(o=>`<option value="${esc(o)}">`).join('')}</datalist>` : '';
-    return `<label class="f"><span>${esc(c.name)}</span><input id="${id}" list="dl${c.i}" autocomplete="off">${dl}${chips}</label>`;
-  }).join('');
+function renderForm(keep = {}){
+  const sug = suggestions();
+  const isCard = state.dest !== 'conta';
+  const cats = isCard ? sug.cardCats : sug.contaCats;
+  const cat = keep.cat && cats.includes(keep.cat) ? keep.cat : CONFIG.defaultCategory;
+  const destBtns = [['conta','Conta'], ...CONFIG.cards.map((n,i) => [i, n])]
+    .map(([v,l]) => `<button type="button" data-dest="${v}" aria-pressed="${String(state.dest)===String(v)}">${esc(l)}</button>`).join('');
 
   $('#view').innerHTML = `
     <form class="card" id="form" autocomplete="off">
-      ${fields}
+      <div class="seg">${destBtns}</div>
+      <label class="f"><span>Valor</span><input id="fValor" class="money" inputmode="decimal" placeholder="0,00"></label>
+      <label class="f"><span>Descrição</span><input id="fDesc" list="dlDesc" placeholder="Ex.: Mercado, Farmácia, Shopee…">
+        <datalist id="dlDesc">${sug.descs.map(d => `<option value="${esc(d)}">`).join('')}</datalist></label>
+      <div class="f"><span>Categoria</span><div class="chips" id="fCat">${cats.map(c => `<button type="button" class="chip ${c===cat?'on':''}" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div></div>
+      ${isCard ? `
+        <div class="grid2">
+          <label class="f"><span>Fatura de</span><input type="month" id="fFatura" value="${keep.fatura || thisMonthISO()}"></label>
+          <label class="f"><span>Parcelas</span><select id="fParc">${Array.from({length:24},(_,i)=>`<option value="${i+1}" ${String(i+1)===String(keep.parc||1)?'selected':''}>${i===0?'À vista':(i+1)+'x'}</option>`).join('')}</select></label>
+        </div>
+        <div class="f hidden" id="wrapModo"><span>O valor digitado é</span><div class="chips" id="fModo">
+          <button type="button" class="chip on" data-v="total">o total da compra</button>
+          <button type="button" class="chip" data-v="parcela">o valor de cada parcela</button></div></div>
+        <label class="check"><input type="checkbox" id="fEstorno"> Estorno / reembolso (entra positivo)</label>`
+      : `<label class="f"><span>Data</span><input type="date" id="fData" value="${keep.data || todayISO()}"></label>`}
+      <div class="preview" id="preview"></div>
       <button class="btn block" id="btnSave" type="submit">Lançar na planilha</button>
-      <p class="muted" style="margin:10px 0 0;text-align:center">${esc(state.file.name)} · tabela ${esc(state.model.tableName)}</p>
     </form>`;
 
-  document.querySelectorAll('.chips').forEach(box => {
-    const input = document.getElementById(box.dataset.for);
-    const sync = () => box.querySelectorAll('.chip').forEach(ch => ch.classList.toggle('on', ch.dataset.v === input.value));
-    box.querySelectorAll('.chip').forEach(ch => ch.onclick = () => { input.value = input.value === ch.dataset.v ? '' : ch.dataset.v; sync(); });
-    input.addEventListener('input', sync);
+  document.querySelectorAll('[data-dest]').forEach(b => b.onclick = () => {
+    state.dest = b.dataset.dest === 'conta' ? 'conta' : +b.dataset.dest; store.set('dest', state.dest);
+    renderForm({ cat: currentCat() });
   });
-  const vEl = roles.value && document.getElementById('c'+roles.value.i);
-  if (vEl && !matchMedia('(pointer:coarse)').matches) vEl.focus();
+  const chipGroup = id => document.querySelectorAll(`#${id} .chip`).forEach(ch => ch.onclick = () => {
+    document.querySelectorAll(`#${id} .chip`).forEach(x => x.classList.toggle('on', x === ch)); updatePreview();
+  });
+  chipGroup('fCat'); if (isCard) chipGroup('fModo');
+  ['fValor','fDesc','fData','fFatura','fParc','fEstorno'].forEach(id => { const el = document.getElementById(id); if (el){ el.oninput = updatePreview; el.onchange = updatePreview; } });
+  if (!matchMedia('(pointer:coarse)').matches) $('#fValor').focus();
   $('#form').onsubmit = submitEntry;
+  updatePreview();
+}
+const currentCat = () => { const on = document.querySelector('#fCat .chip.on'); return on ? on.dataset.v : CONFIG.defaultCategory; };
+const currentModo = () => { const on = document.querySelector('#fModo .chip.on'); return on ? on.dataset.v : 'total'; };
+
+/* Monta o plano de gravação (onde cada linha vai entrar) */
+async function buildPlan(load){
+  const v = parseNum($('#fValor').value);
+  const desc = $('#fDesc').value.trim();
+  const cat = currentCat();
+  if (isNaN(v) || v <= 0) return { error: 'Informe um valor maior que zero.' };
+  if (!desc) return { error: 'Informe a descrição.' };
+
+  if (state.dest === 'conta'){
+    const iso = $('#fData').value; if (!iso) return { error: 'Informe a data.' };
+    const [y, m, d] = iso.split('-').map(Number);
+    const sheet = load ? await loadSheet('controle', y) : state.cache[(sheetFor('controle', y)||{}).name];
+    if (!sheetFor('controle', y)) return { error: `Não existe a aba "Controle ${y}" na planilha.` };
+    if (!sheet) return { pending: true, text: `Controle ${y} › ${MESES[m-1]}` };
+    const blk = sheet.months[m-1];
+    if (!blk) return { error: `Não achei o bloco de ${MESES[m-1]} na aba Controle ${y}.` };
+    if (!blk.free) return { error: `O bloco de ${MESES[m-1]} está cheio até a linha do TOTAL MES. Insira linhas em branco antes dela no Excel.` };
+    const value = /receita/i.test(cat) ? v : -v;
+    return { rows: [{ sheet, c1: blk.c, c2: blk.c+3, r: blk.free, values: [d, desc, cat, value] }],
+      text: `Entra em <strong>Controle ${y} › ${MESES[m-1]}</strong>, linha ${blk.free}, como <strong>${fmtBRL(value)}</strong>.` };
+  }
+
+  // Cartão
+  const fat = $('#fFatura').value; if (!fat) return { error: 'Informe o mês da fatura.' };
+  const [fy, fm] = fat.split('-').map(Number);
+  const n = +$('#fParc').value || 1;
+  $('#wrapModo').classList.toggle('hidden', n === 1);
+  const estorno = $('#fEstorno').checked;
+  const each = (n > 1 && currentModo() === 'total') ? Math.floor(v * 100 / n) / 100 : v;
+  const amounts = Array.from({length:n}, (_,k) => (n > 1 && currentModo() === 'total' && k === n-1) ? round2(v - each*(n-1)) : each);
+  const rows = [], missing = [];
+  for (let k = 0; k < n; k++){
+    const idx = (fm - 1) + k, y = fy + Math.floor(idx / 12), m = idx % 12;
+    if (!sheetFor('cartoes', y)){ missing.push(`${MES3[m]}/${String(y).slice(2)}`); continue; }
+    const sheet = load ? await loadSheet('cartoes', y) : state.cache[sheetFor('cartoes', y).name];
+    if (!sheet) return { pending: true, text: 'Verificando a aba de cartões…' };
+    const blk = sheet.months[m]; const sec = blk && blk.sections[state.dest];
+    if (!sec) return { error: `Não achei o bloco do ${CONFIG.cards[state.dest]} em ${MESES[m]}/${y}.` };
+    // várias parcelas nunca caem no mesmo bloco, então a primeira linha livre basta
+    if (!sec.free) return { error: `O ${sec.name} de ${MESES[m]}/${y} está cheio até a linha do Total. Insira linhas em branco antes dela no Excel.` };
+    const val = estorno ? amounts[k] : -amounts[k];
+    rows.push({ sheet, c1: blk.c+1, c2: blk.c+4, r: sec.free, values: [desc, n > 1 ? `${k+1}/${n}` : '-', cat, val], label: `${MES3[m]}/${String(y).slice(2)}` });
+  }
+  const card = CONFIG.cards[state.dest];
+  let text = n === 1
+    ? `Entra no <strong>${esc(card)}</strong>, fatura de <strong>${MESES[fm-1]}/${fy}</strong>, como <strong>${fmtBRL(rows[0] ? rows[0].values[3] : (estorno?v:-v))}</strong>.`
+    : `<strong>${n}x de ${fmtBRL(amounts[0])}</strong> no <strong>${esc(card)}</strong>, de ${MES3[fm-1]}/${String(fy).slice(2)} até ${rows.length ? rows[rows.length-1].label : '—'}.`;
+  if (missing.length) text += `<br><span style="color:var(--bad)">${missing.length} parcela(s) (${missing.join(', ')}) ficam de fora: a aba de cartões desse ano ainda não existe.</span>`;
+  return { rows, text, missing };
+}
+
+let previewSeq = 0;
+async function updatePreview(){
+  const seq = ++previewSeq, box = $('#preview'); if (!box) return;
+  try {
+    let plan = await buildPlan(false);
+    if (plan.pending){ box.innerHTML = esc(plan.text) + '…'; plan = await buildPlan(true); }
+    if (seq !== previewSeq) return;
+    box.innerHTML = plan.error ? `<span class="muted">${esc(plan.error)}</span>` : plan.text;
+  } catch(e){ if (seq === previewSeq) box.innerHTML = `<span style="color:var(--bad)">${esc(e.message)}</span>`; }
 }
 
 async function submitEntry(ev){
   ev.preventDefault();
-  const { cols, roles } = state.model;
   const btn = $('#btnSave');
-  const row = [], formulas = [];
-  for (const c of cols){
-    if (c.formula){ row.push(''); formulas.push(c.formula); continue; }
-    formulas.push(null);
-    const raw = (document.getElementById('c'+c.i).value || '').trim();
-    if (c.kind === 'date') row.push(raw ? isoToSerial(raw) : '');
-    else if (c.kind === 'number'){
-      if (!raw){ row.push(''); continue; }
-      const n = parseNum(raw); if (isNaN(n)){ toast(`"${c.name}" não é um número válido`, true); return; }
-      row.push(n);
-    } else row.push(raw);
-  }
-  if (roles.value && row[roles.value.i] === ''){ toast(`Preencha "${roles.value.name}"`, true); document.getElementById('c'+roles.value.i).focus(); return; }
-
   btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Gravando…';
+  const keep = { cat: currentCat(), data: $('#fData') && $('#fData').value, fatura: $('#fFatura') && $('#fFatura').value };
   try {
-    const added = await graph(`${tbl()}/rows/add`, { method:'POST', body:{ values:[row] } });
-    if (formulas.some(f => f) && added && added.index != null){
-      await graph(`${tbl()}/rows/itemAt(index=${added.index})/range`, { method:'PATCH', body:{ formulasR1C1:[formulas] } }).catch(()=>{});
+    // relê as abas envolvidas para não sobrescrever nada que mudou no Excel
+    const touched = new Set();
+    let plan = await buildPlan(true);
+    if (plan.error){ toast(plan.error, true); btn.disabled=false; btn.textContent='Lançar na planilha'; return; }
+    plan.rows.forEach(r => touched.add(r.sheet));
+    for (const s of touched) await loadSheet(s.kind, s.year, true);
+    plan = await buildPlan(true);
+    if (plan.error){ toast(plan.error, true); btn.disabled=false; btn.textContent='Lançar na planilha'; return; }
+    if (plan.missing && plan.missing.length && !confirm(`${plan.missing.length} parcela(s) não serão lançadas porque a aba de cartões do próximo ano não existe. Lançar as outras?`)){
+      btn.disabled=false; btn.textContent='Lançar na planilha'; return;
     }
-    state.model.rows.push(row);
-    cols.forEach(c => { if (c.kind==='text' && !c.formula && row[c.i] && !c.options.includes(row[c.i])) c.options.push(row[c.i]); });
-    const v = roles.value ? fmtBRL(row[roles.value.i]) : '';
-    toast(`Lançado ${v} ✓`);
-    renderForm();
+    for (const row of plan.rows) await writeRow(row.sheet.ws, row.c1, row.c2, row.r, row.values);
+    const total = plan.rows.reduce((s,r) => s + r.values[3], 0);
+    for (const s of new Set(plan.rows.map(r => r.sheet))) await loadSheet(s.kind, s.year, true);
+    toast(plan.rows.length > 1 ? `${plan.rows.length} parcelas lançadas ✓` : `Lançado ${fmtBRL(total)} ✓`);
+    renderForm(keep);
   } catch(e){
     if (e.message === 'LOGIN') return showLogin('Sua sessão expirou. Entre de novo — o lançamento não foi gravado.');
     toast('Não gravou: ' + e.message, true);
@@ -465,113 +566,107 @@ async function submitEntry(ev){
   }
 }
 
-function renderSummary(){
-  const { rows, roles } = state.model;
-  if (!roles.date || !roles.value){
-    $('#view').innerHTML = `<div class="card"><h2>Resumo</h2><p>Para montar o resumo, a tabela precisa ter uma coluna de <strong>data</strong> e uma de <strong>valor</strong>. Não identifiquei ${!roles.date?'a de data':'a de valor'}.</p></div>`;
-    return;
-  }
+/* ================== RESUMO ================== */
+async function renderSummary(){
   const {y, m} = state.month;
-  const prev = m === 0 ? {y:y-1, m:11} : {y, m:m-1};
-  const parsed = rows.map(r => ({ r, d: cellToDate(r[roles.date.i]), v: parseNum(r[roles.value.i]) })).filter(x => x.d && !isNaN(x.v));
-  const inMonth = (x, mm) => x.d.getFullYear() === mm.y && x.d.getMonth() === mm.m;
-  const isIncome = x => roles.type ? RX.income.test(String(x.r[roles.type.i])) : false;
-
-  const cur = parsed.filter(x => inMonth(x, state.month));
-  const before = parsed.filter(x => inMonth(x, prev));
-  const exp = cur.filter(x => !isIncome(x)), inc = cur.filter(isIncome);
-  const sum = a => a.reduce((s,x) => s + Math.abs(x.v), 0);
-  const gastos = sum(exp), receitas = sum(inc), gastosAnt = sum(before.filter(x => !isIncome(x)));
-  const delta = gastosAnt ? (gastos - gastosAnt) / gastosAnt : null;
-
-  const byCat = {};
-  exp.forEach(x => { const k = roles.cat ? (String(x.r[roles.cat.i]).trim() || 'Sem categoria') : 'Gastos'; byCat[k] = (byCat[k]||0) + Math.abs(x.v); });
-  const cats = Object.entries(byCat).sort((a,b) => b[1]-a[1]);
-  const max = cats.length ? cats[0][1] : 0;
-
-  const recent = [...cur].sort((a,b) => b.d - a.d).slice(0, 12);
-
-  $('#view').innerHTML = `
+  const view = $('#view');
+  view.innerHTML = `<div class="center"><div class="spinner"></div>Lendo ${MESES[m]}/${y}…</div>`;
+  let ctl, crt;
+  try { [ctl, crt] = await Promise.all([loadSheet('controle', y), loadSheet('cartoes', y)]); }
+  catch(e){ return showError(e); }
+  const nav = `
     <div class="monthnav">
       <button id="mPrev" aria-label="Mês anterior">‹</button>
       <strong>${MESES[m]} ${y}</strong>
       <button id="mNext" aria-label="Próximo mês">›</button>
-    </div>
+    </div>`;
+  const bindNav = () => {
+    $('#mPrev').onclick = () => { state.month = m === 0 ? {y:y-1, m:11} : {y, m:m-1}; renderSummary(); };
+    $('#mNext').onclick = () => { state.month = m === 11 ? {y:y+1, m:0} : {y, m:m+1}; renderSummary(); };
+  };
+  const blk = ctl && ctl.months[m];
+  if (!blk){ view.innerHTML = nav + `<div class="card"><p>Não há a aba <strong>Controle ${y}</strong> ou o bloco deste mês.</p></div>`; return bindNav(); }
+
+  const items = blk.items.filter(i => i.val !== 0);
+  const receitas = items.filter(i => i.val > 0).reduce((s,i)=>s+i.val,0);
+  const despesas = items.filter(i => i.val < 0).reduce((s,i)=>s-i.val,0);
+  const byCat = {};
+  items.filter(i => i.val < 0).forEach(i => { const k = i.cat || 'Sem categoria'; byCat[k] = (byCat[k]||0) - i.val; });
+  const cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  const maxCat = cats.length ? cats[0][1] : 0;
+  const top = items.filter(i => i.val < 0).sort((a,b)=>a.val-b.val).slice(0, 8);
+  const cardBlk = crt && crt.months[m];
+  const saldo = blk.total;
+
+  view.innerHTML = nav + `
     <div class="tiles">
-      <div class="tile"><div class="k">Gastos no mês</div><div class="v">${fmtBRL(gastos)}</div>
-        <div class="d">${delta==null ? 'sem dados do mês anterior' : `${delta>0?'▲':'▼'} ${Math.abs(delta*100).toFixed(0)}% vs ${MESES[prev.m]}`}</div></div>
-      ${roles.type ? `
-      <div class="tile"><div class="k">Receitas</div><div class="v">${fmtBRL(receitas)}</div><div class="d">${inc.length} lançamento(s)</div></div>
-      <div class="tile"><div class="k">Saldo</div><div class="v" style="color:${receitas-gastos>=0?'var(--good)':'var(--bad)'}">${fmtBRL(receitas-gastos)}</div><div class="d">receitas − gastos</div></div>`
-      : `<div class="tile"><div class="k">Lançamentos</div><div class="v">${cur.length}</div><div class="d">no mês</div></div>`}
+      <div class="tile"><div class="k">Receitas</div><div class="v">${fmtBRL(receitas)}</div></div>
+      <div class="tile"><div class="k">Saídas</div><div class="v">${fmtBRL(despesas)}</div></div>
+      <div class="tile"><div class="k">Saldo do mês</div><div class="v" style="color:${saldo>=0?'var(--good)':'var(--bad)'}">${fmtBRL(saldo)}</div><div class="d">TOTAL MES da planilha</div></div>
+      <div class="tile"><div class="k">Acumulado</div><div class="v" style="color:${(blk.acc||0)>=0?'var(--good)':'var(--bad)'}">${blk.acc==null?'—':fmtBRL(blk.acc)}</div><div class="d">linha TOTAL</div></div>
     </div>
+    ${cardBlk ? `<div class="card"><h2>Faturas dos cartões</h2><ul class="list">${cardBlk.sections.map(s => `
+      <li><div class="grow">${esc(s.name)} <span class="muted">· ${s.items.length} itens</span></div><div class="num">${fmtBRL(Math.abs(s.total))}</div></li>`).join('')}</ul></div>` : ''}
     <div class="card">
-      <h2>${roles.cat ? 'Gastos por ' + esc(roles.cat.name.toLowerCase()) : 'Gastos'}</h2>
+      <h2>Saídas por categoria</h2>
       ${cats.length ? `<div class="bars">${cats.map(([k,v]) => `
-        <div class="row" title="${esc(k)}: ${fmtBRL(v)} (${(v/gastos*100).toFixed(1)}%)">
+        <div class="row" title="${esc(k)}: ${fmtBRL(v)}">
           <div class="lbl ellipsis">${esc(k)}</div>
-          <div class="track"><div class="fill" style="width:${(v/max*100).toFixed(1)}%"></div></div>
-          <div class="val num">${fmtBRL(v)} · ${(v/gastos*100).toFixed(0)}%</div>
-        </div>`).join('')}</div>` : '<p class="muted">Nenhum gasto neste mês.</p>'}
+          <div class="track"><div class="fill" style="width:${(v/maxCat*100).toFixed(1)}%"></div></div>
+          <div class="val num">${fmtBRL(v)} · ${(v/despesas*100).toFixed(0)}%</div>
+        </div>`).join('')}</div>` : '<p class="muted">Nenhuma saída neste mês.</p>'}
     </div>
     <div class="card">
-      <h2>Últimos lançamentos</h2>
-      ${recent.length ? `<ul class="list">${recent.map(x => `
-        <li><div class="grow">
-          <div class="ellipsis">${esc(roles.desc ? x.r[roles.desc.i] : '') || '—'}</div>
-          <div class="muted ellipsis">${x.d.toLocaleDateString('pt-BR')}${roles.cat && x.r[roles.cat.i] ? ' · ' + esc(x.r[roles.cat.i]) : ''}</div>
-        </div><div class="num" style="${isIncome(x)?'color:var(--good)':''}">${isIncome(x)?'+':''}${fmtBRL(Math.abs(x.v))}</div></li>`).join('')}</ul>`
-      : '<p class="muted">Nada lançado neste mês.</p>'}
+      <h2>Maiores saídas</h2>
+      ${top.length ? `<ul class="list">${top.map(i => `
+        <li><div class="grow"><div class="ellipsis">${esc(i.desc || '—')}</div><div class="muted">${i.day ? 'dia ' + esc(i.day) + ' · ' : ''}${esc(i.cat || 'sem categoria')}</div></div>
+        <div class="num">${fmtBRL(-i.val)}</div></li>`).join('')}</ul>` : '<p class="muted">Nada lançado.</p>'}
     </div>
     <button class="btn ghost block" id="btnReload">Atualizar dados da planilha</button>`;
-
-  $('#mPrev').onclick = () => { state.month = prev; renderSummary(); };
-  $('#mNext').onclick = () => { state.month = m === 11 ? {y:y+1, m:0} : {y, m:m+1}; renderSummary(); };
-  $('#btnReload').onclick = async () => { loading('Atualizando…'); try { await loadModel(); renderMain(); } catch(e){ showError(e); } };
+  bindNav();
+  $('#btnReload').onclick = async () => { state.cache = {}; renderSummary(); };
 }
 
+/* ================== CONFIGURAÇÕES ================== */
 function showSettings(){
   $('#btnSettings').classList.add('hidden');
-  const { cols, roles } = state.model || { cols:[], roles:{} };
-  const roleOf = c => [['date','data'],['value','valor'],['cat','categoria'],['type','tipo (receita/despesa)'],['desc','descrição']].filter(([k]) => roles[k] === c).map(([,l]) => l).join(', ');
   app.innerHTML = `
     <div class="card">
       <h2>Configurações</h2>
-      <p><strong>Planilha:</strong> ${esc(state.file && state.file.name)}<br><strong>Tabela:</strong> ${esc(state.table && state.table.name)}</p>
-      <div class="row-actions">
-        <button class="btn ghost" id="sFile">Trocar planilha</button>
-        <button class="btn ghost" id="sTable">Trocar tabela</button>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Como o painel entendeu as colunas</h2>
-      <ul class="list">${cols.map(c => `<li><div class="grow"><strong>${esc(c.name)}</strong> <span class="muted">${c.formula ? 'fórmula' : {date:'data', number:'número', text:'texto'}[c.kind]}</span></div><span class="muted">${esc(roleOf(c))}</span></li>`).join('')}</ul>
-    </div>
-    <div class="card">
-      <p class="muted">URI de redirecionamento deste painel: <code>${esc(REDIRECT_URI)}</code></p>
-      <div class="row-actions"><button class="btn ghost" id="sBack">Voltar</button><button class="btn ghost" id="sOut">Sair da conta</button></div>
+      <p><strong>Planilha:</strong> ${esc(state.file && state.file.name)}</p>
+      <p class="muted">Abas encontradas: ${esc(state.sheets.map(s => s.name).join(', '))}</p>
+      <p class="muted">O painel grava nas abas <strong>Controle AAAA</strong> (lançamentos da conta) e <strong>Cartões AAAA</strong> (${esc(CONFIG.cards.join(' e '))}), sempre na primeira linha livre do mês, dentro da faixa que a linha de total soma. Para um ano novo, basta criar as abas com o mesmo modelo (ex.: duplicar "Controle 2026" como "Controle 2027").</p>
+      <div class="row-actions"><button class="btn ghost" id="sFile">Trocar planilha</button><button class="btn ghost" id="sBack">Voltar</button><button class="btn ghost" id="sOut">Sair da conta</button></div>
     </div>`;
   $('#sFile').onclick = () => { $('#btnSettings').classList.remove('hidden'); showFilePicker(); };
-  $('#sTable').onclick = () => { $('#btnSettings').classList.remove('hidden'); state._forcePick = true; showTablePicker(); };
   $('#sBack').onclick = () => renderMain();
   $('#sOut').onclick = logout;
 }
-$('#btnSettings').onclick = () => state.model ? showSettings() : null;
+$('#btnSettings').onclick = () => state.sheets.length ? showSettings() : null;
 
 /* ================== INICIALIZAÇÃO ================== */
-async function boot(){
+async function start(){
+  loading('Lendo a planilha…');
   try {
-    await handleRedirect();
-  } catch(e){ return showLogin(e.message); }
+    const j = await graph(`${wb()}/worksheets?$select=id,name`);
+    state.sheets = (j.value || []).map(s => ({ id: s.id, name: s.name }));
+    const y = now.getFullYear();
+    if (!sheetFor('controle', y) && !sheetFor('cartoes', y)){
+      return showError(new Error(`Não encontrei as abas "Controle ${y}" e "Cartões ${y}" em ${state.file.name}.`));
+    }
+    await Promise.all([loadSheet('controle', y), loadSheet('cartoes', y)]);
+    renderMain();
+  } catch(e){ showError(e); }
+}
+async function boot(){
+  try { await handleRedirect(); } catch(e){ return showLogin(e.message); }
   if (!store.get('tok')) return showLogin();
   try {
     let me = store.get('me');
-    if (!me){ me = await graph('/me?$select=displayName,userPrincipalName'); store.set('me', me); }
+    if (!me){ me = await graph('/me?$select=displayName'); store.set('me', me); }
     $('#who').textContent = (me.displayName || '').split(' ')[0];
     if (!state.file) return showFilePicker();
-    if (!state.table) return showTablePicker();
-    loading('Lendo os lançamentos…');
-    await loadModel(); renderMain();
+    start();
   } catch(e){ showError(e); }
 }
 boot();
