@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14213d">
+<title>Controle Financeiro</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --surface:#ffffff; --ink:#15181d; --ink-2:#4a5260; --muted:#7a8291;
+    --line:#e3e6eb; --accent:#2f5bd3; --accent-ink:#ffffff; --accent-soft:#e8eefc;
+    --bar:#3b66d8; --good:#1f7a4d; --bad:#b42318; --radius:14px;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1115; --surface:#181b21; --ink:#eef0f3; --ink-2:#b4bac5; --muted:#8a92a0;
+      --line:#2a2f38; --accent:#7f9cf5; --accent-ink:#0f1115; --accent-soft:#1f2740;
+      --bar:#7f9cf5; --good:#5fc28e; --bad:#f07a6e; --shadow:none;
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:#14213d;color:#fff;
+    padding:14px 18px calc(14px);display:flex;align-items:center;gap:12px}
+  header h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px;flex:1}
+  header .who{font-size:13px;opacity:.8}
+  header button{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;
+    border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer}
+  main{max-width:720px;margin:0 auto;padding:16px 14px 90px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+  h2{font-size:16px;margin:0 0 12px}
+  p{margin:0 0 10px;color:var(--ink-2)}
+  .muted{color:var(--muted);font-size:13px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;
+    background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:600;
+    border-radius:12px;padding:12px 16px;cursor:pointer;min-height:46px}
+  .btn.block{width:100%}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+  .btn:disabled{opacity:.55;cursor:default}
+  .tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:4px;margin-bottom:14px}
+  .tabs button{flex:1;border:0;background:transparent;color:var(--ink-2);font:inherit;
+    font-weight:600;padding:10px;border-radius:9px;cursor:pointer}
+  .tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+  label.f{display:block;margin-bottom:14px}
+  label.f span{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+  input,select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
+  input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  input.money{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chip{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);
+    border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+  .chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .calc{font-size:13px;color:var(--muted);margin:-6px 0 14px}
+  .list{list-style:none;margin:0;padding:0}
+  .list li{display:flex;align-items:center;gap:10px;padding:12px 4px;border-top:1px solid var(--line)}
+  .list li:first-child{border-top:0}
+  .list li.pick{cursor:pointer;border-radius:10px}
+  .list li.pick:hover{background:var(--accent-soft)}
+  .grow{flex:1;min-width:0}
+  .ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+  .tile .k{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .tile .v{font-size:24px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+  .tile .d{font-size:12px;color:var(--muted);margin-top:2px}
+  .monthnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .monthnav strong{font-size:17px;text-transform:capitalize}
+  .monthnav button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink);font-size:18px;cursor:pointer}
+  .bars .row{display:grid;grid-template-columns:minmax(90px,34%) 1fr auto;gap:10px;align-items:center;padding:7px 0}
+  .bars .track{height:12px;border-radius:0 4px 4px 0;background:transparent;position:relative}
+  .bars .fill{height:100%;background:var(--bar);border-radius:0 4px 4px 0;min-width:2px}
+  .bars .lbl{font-size:14px}
+  .bars .val{font-size:13px;color:var(--ink-2)}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:#14213d;color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;
+    transition:.25s;z-index:20;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:var(--bad)}
+  .err-box{background:#fdecea;color:#7a1a12;border-radius:10px;padding:12px;font-size:14px;margin-bottom:12px;word-break:break-word}
+  @media (prefers-color-scheme: dark){.err-box{background:#3a1d1a;color:#ffd4cf}}
+  code{background:var(--accent-soft);padding:2px 6px;border-radius:6px;font-size:13px;word-break:break-all}
+  .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .spinner{width:18px;height:18px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .center{display:flex;align-items:center;justify-content:center;gap:10px;padding:30px;color:var(--muted)}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>Controle Financeiro</h1>
+  <span class="who" id="who"></span>
+  <button id="btnSettings" class="hidden" title="Configurações">⚙︎</button>
+</header>
+<main id="app"><div class="center"><div class="spinner"></div>Carregando…</div></main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== CONFIGURAÇÃO ================== */
+const CONFIG = {
+  clientId: 'fac940d2-e6ae-4231-94da-f98c1071c957',
+  authority: 'https://login.microsoftonline.com/consumers/oauth2/v2.0',
+  scopes: 'openid profile offline_access User.Read Files.ReadWrite'
+};
+const REDIRECT_URI = location.origin + location.pathname.replace(/index\.html$/i, '');
+const GRAPH = 'https://graph.microsoft.com/v1.0';
+
+/* ================== UTILITÁRIOS ================== */
+const store = {
+  get(k, def=null){ try{ const v = localStorage.getItem('cf_'+k); return v==null?def:JSON.parse(v);}catch(e){return def;} },
+  set(k, v){ try{ localStorage.setItem('cf_'+k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem('cf_'+k); }catch(e){} }
+};
+const sess = {
+  get(k){ try{ return sessionStorage.getItem('cf_'+k);}catch(e){return null;} },
+  set(k,v){ try{ sessionStorage.setItem('cf_'+k, v);}catch(e){} },
+  del(k){ try{ sessionStorage.removeItem('cf_'+k);}catch(e){} }
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const BRL = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'});
+const fmtBRL = n => BRL.format(n || 0);
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const app = $('#app');
+
+function toast(msg, isErr=false){
+  const t = $('#toast'); t.textContent = msg; t.classList.toggle('err', isErr);
+  t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), isErr?5000:2200);
+}
+function loading(msg='Carregando…'){ app.innerHTML = `<div class="center"><div class="spinner"></div>${esc(msg)}</div>`; }
+
+/* Datas do Excel (número serial) <-> JS */
+const EXCEL_EPOCH = Date.UTC(1899, 11, 30);
+const isoToSerial = iso => { const [y,m,d] = iso.split('-').map(Number); return (Date.UTC(y,m-1,d) - EXCEL_EPOCH) / 864e5; };
+function cellToDate(v){
+  if (typeof v === 'number' && v > 20000 && v < 80000){ const d = new Date(EXCEL_EPOCH + Math.round(v)*864e5); return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); }
+  if (typeof v === 'string'){
+    let m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/); if (m){ let y=+m[3]; if(y<100) y+=2000; return new Date(y, +m[2]-1, +m[1]); }
+    m = v.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+  }
+  return null;
+}
+function parseNum(v){
+  if (typeof v === 'number') return v;
+  if (v == null) return NaN;
+  let s = String(v).replace(/R\$|\s/g,'').trim();
+  if (!s) return NaN;
+  if (s.includes(',')) s = s.replace(/\./g,'').replace(',', '.');
+  return Number(s);
+}
+const todayISO = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+
+/* ================== LOGIN (OAuth 2.0 + PKCE, sem bibliotecas) ================== */
+function b64url(bytes){ return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function randomStr(n){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
+
+async function login(){
+  const verifier = randomStr(48), state = randomStr(16);
+  sess.set('pkce', verifier); sess.set('state', state);
+  const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  const p = new URLSearchParams({
+    client_id: CONFIG.clientId, response_type: 'code', redirect_uri: REDIRECT_URI,
+    scope: CONFIG.scopes, code_challenge: challenge, code_challenge_method: 'S256',
+    state, response_mode: 'query', prompt: 'select_account'
+  });
+  location.assign(`${CONFIG.authority}/authorize?${p}`);
+}
+
+async function tokenRequest(params){
+  const body = new URLSearchParams({ client_id: CONFIG.clientId, scope: CONFIG.scopes, ...params });
+  const r = await fetch(`${CONFIG.authority}/token`, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body });
+  const j = await r.json().catch(()=>({}));
+  if (!r.ok) throw new Error(j.error_description || j.error || ('Falha no login ('+r.status+')'));
+  const tok = { access: j.access_token, refresh: j.refresh_token || store.get('tok',{}).refresh, exp: Date.now() + (j.expires_in||3600)*1000 };
+  store.set('tok', tok); return tok;
+}
+
+async function handleRedirect(){
+  const q = new URLSearchParams(location.search);
+  if (!q.has('code') && !q.has('error')) return null;
+  history.replaceState(null, '', REDIRECT_URI);
+  if (q.has('error')) throw new Error(q.get('error_description') || q.get('error'));
+  if (q.get('state') !== sess.get('state')) throw new Error('Retorno de login inválido (state). Tente entrar de novo.');
+  const tok = await tokenRequest({ grant_type:'authorization_code', code:q.get('code'), redirect_uri:REDIRECT_URI, code_verifier:sess.get('pkce') });
+  sess.del('pkce'); sess.del('state');
+  return tok;
+}
+
+async function getToken(force=false){
+  const tok = store.get('tok');
+  if (!tok) throw new Error('LOGIN');
+  if (!force && tok.exp > Date.now() + 60000) return tok.access;
+  if (!tok.refresh) throw new Error('LOGIN');
+  try { return (await tokenRequest({ grant_type:'refresh_token', refresh_token: tok.refresh })).access; }
+  catch(e){ store.del('tok'); throw new Error('LOGIN'); }
+}
+
+function logout(){ store.del('tok'); store.del('me'); location.assign(`${CONFIG.authority}/logout?post_logout_redirect_uri=${encodeURIComponent(REDIRECT_URI)}`); }
+
+/* ================== MICROSOFT GRAPH ================== */
+async function graph(path, {method='GET', body} = {}, attempt=0){
+  const token = await getToken(attempt === 1);
+  const r = await fetch(GRAPH + path, {
+    method, headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (r.status === 401 && attempt === 0) return graph(path, {method, body}, 1);
+  if ((r.status === 429 || r.status >= 500) && attempt < 2){
+    const wait = (Number(r.headers.get('Retry-After')) || 2) * 1000;
+    await new Promise(res => setTimeout(res, wait)); return graph(path, {method, body}, attempt+1);
+  }
+  if (r.status === 204) return null;
+  const j = await r.json().catch(()=>null);
+  if (!r.ok) throw new Error((j && j.error && j.error.message) || ('Erro ' + r.status));
+  return j;
+}
+const wb = () => `/me/drive/items/${encodeURIComponent(state.file.id)}/workbook`;
+const tbl = () => `${wb()}/tables/${encodeURIComponent(state.table.id)}`;
+
+/* ================== ESTADO ================== */
+const state = {
+  file: store.get('file'),      // {id, name}
+  table: store.get('table'),    // {id, name}
+  model: null,                  // colunas + linhas
+  tab: 'lancar',
+  month: (()=>{ const d=new Date(); return {y:d.getFullYear(), m:d.getMonth()}; })()
+};
+
+/* ================== TELAS ================== */
+function showLogin(errMsg){
+  $('#btnSettings').classList.add('hidden'); $('#who').textContent = '';
+  app.innerHTML = `
+    <div class="card">
+      <h2>Entrar</h2>
+      ${errMsg ? `<div class="err-box">${esc(errMsg)}</div>` : ''}
+      <p>Entre com a sua conta Microsoft pessoal (a mesma do OneDrive onde está a planilha).</p>
+      <button class="btn block" id="btnLogin">Entrar com Microsoft</button>
+      <p class="muted" style="margin-top:14px">Endereço deste painel (precisa estar cadastrado no Azure como URI de redirecionamento SPA):<br><code>${esc(REDIRECT_URI)}</code></p>
+    </div>`;
+  $('#btnLogin').onclick = login;
+}
+
+async function showFilePicker(){
+  loading('Procurando planilhas no seu OneDrive…');
+  let items = [];
+  try {
+    const j = await graph(`/me/drive/root/search(q='xlsx')?$top=200&$select=id,name,parentReference,lastModifiedDateTime,file`);
+    items = (j.value||[]).filter(i => /\.xlsx$/i.test(i.name)).sort((a,b)=> b.lastModifiedDateTime.localeCompare(a.lastModifiedDateTime));
+  } catch(e){ return showError(e); }
+  const render = (f='') => {
+    const list = items.filter(i => i.name.toLowerCase().includes(f.toLowerCase()));
+    $('#files').innerHTML = list.length ? list.map(i => `
+      <li class="pick" data-id="${esc(i.id)}" data-name="${esc(i.name)}">
+        <div class="grow"><div class="ellipsis"><strong>${esc(i.name)}</strong></div>
+        <div class="muted ellipsis">${esc((i.parentReference && i.parentReference.path || '').replace(/^\/drive\/root:?/,'') || '/')} · ${new Date(i.lastModifiedDateTime).toLocaleDateString('pt-BR')}</div></div>
+      </li>`).join('') : `<li><span class="muted">Nenhuma planilha .xlsx encontrada.</span></li>`;
+    document.querySelectorAll('#files li.pick').forEach(li => li.onclick = () => {
+      state.file = { id: li.dataset.id, name: li.dataset.name }; store.set('file', state.file);
+      state.table = null; store.del('table'); showTablePicker();
+    });
+  };
+  app.innerHTML = `
+    <div class="card">
+      <h2>Qual é a sua planilha de controle financeiro?</h2>
+      <label class="f"><input id="q" placeholder="Filtrar pelo nome…" autocomplete="off"></label>
+      <ul class="list" id="files"></ul>
+    </div>`;
+  render(); $('#q').oninput = e => render(e.target.value);
+}
+
+async function showTablePicker(){
+  loading('Lendo a planilha…');
+  let tables, sheets;
+  try {
+    [tables, sheets] = await Promise.all([ graph(`${wb()}/tables`), graph(`${wb()}/worksheets`) ]);
+    tables = tables.value || []; sheets = sheets.value || [];
+  } catch(e){ return showError(e); }
+
+  if (tables.length === 1 && !state._forcePick){ return pickTable(tables[0]); }
+
+  const ranges = await Promise.all(sheets.map(s =>
+    graph(`${wb()}/worksheets/${encodeURIComponent(s.id)}/usedRange(valuesOnly=true)?$select=address`).catch(()=>null)));
+
+  app.innerHTML = `
+    <div class="card">
+      <h2>${esc(state.file.name)}</h2>
+      ${tables.length ? `
+        <p>Escolha a tabela onde ficam os lançamentos:</p>
+        <ul class="list" id="tables">${tables.map(t => `<li class="pick" data-id="${esc(t.id)}" data-name="${esc(t.name)}"><div class="grow"><strong>${esc(t.name)}</strong></div><span class="muted">›</span></li>`).join('')}</ul>`
+      : `<p>Essa planilha ainda não tem nenhuma <strong>Tabela do Excel</strong>. O painel grava os lançamentos numa tabela, então vamos transformar a aba dos lançamentos em tabela. A primeira linha do intervalo precisa ser a dos títulos das colunas (Data, Descrição, Valor…).</p>`}
+    </div>
+    <div class="card">
+      <h2>${tables.length ? 'Ou crie uma tabela a partir de uma aba' : 'Transformar uma aba em tabela'}</h2>
+      <ul class="list">${sheets.map((s,i) => `
+        <li><div class="grow">
+          <strong>${esc(s.name)}</strong>
+          <label class="f" style="margin:8px 0 0"><span>Intervalo (com a linha de títulos)</span>
+            <input data-sheet="${i}" value="${esc(ranges[i] && ranges[i].address ? ranges[i].address.split('!').pop() : 'A1:F2')}"></label>
+          <button class="btn ghost" data-mk="${i}" style="margin-top:8px">Criar tabela nesta aba</button>
+        </div></li>`).join('')}</ul>
+      <p class="muted" style="margin-top:10px">Dica: se preferir, faça no Excel Online — selecione os dados e use <strong>Ctrl+T</strong> (marcando "Minha tabela tem cabeçalhos").</p>
+    </div>
+    <button class="btn ghost block" id="btnOtherFile">Escolher outra planilha</button>`;
+
+  document.querySelectorAll('#tables li.pick').forEach(li => li.onclick = () => pickTable({ id: li.dataset.id, name: li.dataset.name }));
+  document.querySelectorAll('[data-mk]').forEach(b => b.onclick = async () => {
+    const i = +b.dataset.mk, sheet = sheets[i];
+    const addr = document.querySelector(`[data-sheet="${i}"]`).value.trim();
+    b.disabled = true; b.textContent = 'Criando…';
+    try {
+      const t = await graph(`${wb()}/tables/add`, { method:'POST', body:{ address: `'${sheet.name.replace(/'/g,"''")}'!${addr}`, hasHeaders: true } });
+      try { await graph(`${wb()}/tables/${encodeURIComponent(t.id)}`, { method:'PATCH', body:{ name:'Lancamentos' } }); t.name='Lancamentos'; } catch(_){}
+      toast('Tabela criada'); pickTable(t);
+    } catch(e){ b.disabled=false; b.textContent='Criar tabela nesta aba'; toast(e.message, true); }
+  });
+  $('#btnOtherFile').onclick = () => { state._forcePick = false; showFilePicker(); };
+}
+
+function pickTable(t){
+  state._forcePick = false;
+  state.table = { id: t.id, name: t.name }; store.set('table', state.table);
+  loadModel().then(renderMain).catch(showError);
+}
+
+function showError(e){
+  if (e && e.message === 'LOGIN') return showLogin();
+  app.innerHTML = `<div class="card"><h2>Algo deu errado</h2><div class="err-box">${esc(e && e.message || e)}</div>
+    <div class="row-actions"><button class="btn" id="retry">Tentar de novo</button><button class="btn ghost" id="reset">Escolher outra planilha</button></div></div>`;
+  $('#retry').onclick = () => boot();
+  $('#reset').onclick = () => { store.del('file'); store.del('table'); state.file=null; state.table=null; showFilePicker(); };
+}
+
+/* ================== MODELO: lê a tabela e entende as colunas ================== */
+const RX = {
+  date: /data|date|^dia$|venc|compet[eê]ncia/i,
+  value:/valor|pre[cç]o|total|quantia|montante|amount|gasto|r\$/i,
+  cat:  /categ|grupo|classifica/i,
+  type: /tipo|natureza|movimenta|entrada|sa[ií]da|receita\/despesa/i,
+  desc: /descri|item|hist[oó]rico|estabelec|onde|loja|obs|detalhe|nome/i,
+  income:/receita|entrada|cr[eé]dito|ganho|sal[aá]rio|renda|recebi/i
+};
+const isDateFmt = f => typeof f === 'string' && /d/i.test(f) && /(y|a)/i.test(f) && !/0/.test(f);
+
+async function loadModel(){
+  const [meta, range] = await Promise.all([ graph(tbl()), graph(`${tbl()}/range`) ]);
+  const vals = range.values, fR1C1 = range.formulasR1C1 || range.formulas, nf = range.numberFormat, vt = range.valueTypes;
+  const headers = vals[0].map(h => String(h).trim());
+  let last = vals.length; if (meta.showTotals) last--;
+  const bodyIdx = []; for (let r=1; r<last; r++) if (vals[r].some(v => v !== '' && v != null)) bodyIdx.push(r);
+  const lastRow = bodyIdx.length ? bodyIdx[bodyIdx.length-1] : null;
+
+  const cols = headers.map((h, c) => {
+    const values = bodyIdx.map(r => vals[r][c]).filter(v => v !== '' && v != null);
+    const numeric = bodyIdx.filter(r => vt[r][c] === 'Double').length;
+    const formula = lastRow != null && typeof fR1C1[lastRow][c] === 'string' && fR1C1[lastRow][c].startsWith('=') ? fR1C1[lastRow][c] : null;
+    const fmt = lastRow != null ? nf[lastRow][c] : (nf[1] && nf[1][c]);
+    let kind = 'text';
+    if (RX.date.test(h) || (numeric && isDateFmt(fmt))) kind = 'date';
+    else if (RX.value.test(h) || (values.length && numeric / values.length >= 0.8)) kind = 'number';
+    const freq = {}; if (kind === 'text') values.forEach(v => { const s=String(v).trim(); if (s) freq[s]=(freq[s]||0)+1; });
+    const options = Object.keys(freq).sort((a,b)=> freq[b]-freq[a]);
+    return { i:c, name: h || `Coluna ${c+1}`, kind, formula, options };
+  });
+
+  const find = (rx, kind) => cols.find(c => !c.formula && rx.test(c.name) && (!kind || c.kind === kind));
+  const roles = {
+    date: cols.find(c => c.kind === 'date'),
+    value: find(RX.value, 'number') || cols.find(c => c.kind === 'number'),
+    cat: find(RX.cat, 'text') || cols.find(c => c.kind==='text' && !c.formula && c.options.length >= 2 && c.options.length <= 25 && !RX.type.test(c.name) && !RX.desc.test(c.name)),
+    type: find(RX.type, 'text'),
+  };
+  roles.desc = find(RX.desc, 'text') || cols.find(c => c.kind==='text' && !c.formula && c !== roles.cat && c !== roles.type);
+  if (roles.type && !roles.type.options.some(o => RX.income.test(o))) roles.type = null;
+
+  const rows = bodyIdx.map(r => vals[r]);
+  state.model = { headers, cols, roles, rows, tableName: meta.name };
+  return state.model;
+}
+
+/* ================== TELA PRINCIPAL ================== */
+function renderMain(){
+  $('#btnSettings').classList.remove('hidden');
+  app.innerHTML = `
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="lancar" aria-selected="${state.tab==='lancar'}">Lançar</button>
+      <button role="tab" data-tab="resumo" aria-selected="${state.tab==='resumo'}">Resumo</button>
+    </div>
+    <div id="view"></div>`;
+  document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; renderMain(); });
+  state.tab === 'lancar' ? renderForm() : renderSummary();
+}
+
+function renderForm(){
+  const { cols, roles } = state.model;
+  const ordered = [...cols].sort((a,b) => (a===roles.value? -1 : b===roles.value ? 1 : 0)); // valor primeiro
+  const fields = ordered.map(c => {
+    if (c.formula) return `<div class="calc">${esc(c.name)}: calculado automaticamente pela planilha</div>`;
+    const id = 'c'+c.i;
+    if (c.kind === 'date') return `<label class="f"><span>${esc(c.name)}</span><input type="date" id="${id}" value="${todayISO()}"></label>`;
+    if (c.kind === 'number') return `<label class="f"><span>${esc(c.name)}</span><input id="${id}" inputmode="decimal" autocomplete="off" placeholder="0,00" class="${c===roles.value?'money':''}"></label>`;
+    const chips = c.options.length && c.options.length <= 14
+      ? `<div class="chips" data-for="${id}">${c.options.map(o => `<button type="button" class="chip" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>` : '';
+    const dl = c.options.length ? `<datalist id="dl${c.i}">${c.options.slice(0,60).map(o=>`<option value="${esc(o)}">`).join('')}</datalist>` : '';
+    return `<label class="f"><span>${esc(c.name)}</span><input id="${id}" list="dl${c.i}" autocomplete="off">${dl}${chips}</label>`;
+  }).join('');
+
+  $('#view').innerHTML = `
+    <form class="card" id="form" autocomplete="off">
+      ${fields}
+      <button class="btn block" id="btnSave" type="submit">Lançar na planilha</button>
+      <p class="muted" style="margin:10px 0 0;text-align:center">${esc(state.file.name)} · tabela ${esc(state.model.tableName)}</p>
+    </form>`;
+
+  document.querySelectorAll('.chips').forEach(box => {
+    const input = document.getElementById(box.dataset.for);
+    const sync = () => box.querySelectorAll('.chip').forEach(ch => ch.classList.toggle('on', ch.dataset.v === input.value));
+    box.querySelectorAll('.chip').forEach(ch => ch.onclick = () => { input.value = input.value === ch.dataset.v ? '' : ch.dataset.v; sync(); });
+    input.addEventListener('input', sync);
+  });
+  const vEl = roles.value && document.getElementById('c'+roles.value.i);
+  if (vEl && !matchMedia('(pointer:coarse)').matches) vEl.focus();
+  $('#form').onsubmit = submitEntry;
+}
+
+async function submitEntry(ev){
+  ev.preventDefault();
+  const { cols, roles } = state.model;
+  const btn = $('#btnSave');
+  const row = [], formulas = [];
+  for (const c of cols){
+    if (c.formula){ row.push(''); formulas.push(c.formula); continue; }
+    formulas.push(null);
+    const raw = (document.getElementById('c'+c.i).value || '').trim();
+    if (c.kind === 'date') row.push(raw ? isoToSerial(raw) : '');
+    else if (c.kind === 'number'){
+      if (!raw){ row.push(''); continue; }
+      const n = parseNum(raw); if (isNaN(n)){ toast(`"${c.name}" não é um número válido`, true); return; }
+      row.push(n);
+    } else row.push(raw);
+  }
+  if (roles.value && row[roles.value.i] === ''){ toast(`Preencha "${roles.value.name}"`, true); document.getElementById('c'+roles.value.i).focus(); return; }
+
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Gravando…';
+  try {
+    const added = await graph(`${tbl()}/rows/add`, { method:'POST', body:{ values:[row] } });
+    if (formulas.some(f => f) && added && added.index != null){
+      await graph(`${tbl()}/rows/itemAt(index=${added.index})/range`, { method:'PATCH', body:{ formulasR1C1:[formulas] } }).catch(()=>{});
+    }
+    state.model.rows.push(row);
+    cols.forEach(c => { if (c.kind==='text' && !c.formula && row[c.i] && !c.options.includes(row[c.i])) c.options.push(row[c.i]); });
+    const v = roles.value ? fmtBRL(row[roles.value.i]) : '';
+    toast(`Lançado ${v} ✓`);
+    renderForm();
+  } catch(e){
+    if (e.message === 'LOGIN') return showLogin('Sua sessão expirou. Entre de novo — o lançamento não foi gravado.');
+    toast('Não gravou: ' + e.message, true);
+    btn.disabled = false; btn.textContent = 'Lançar na planilha';
+  }
+}
+
+function renderSummary(){
+  const { rows, roles } = state.model;
+  if (!roles.date || !roles.value){
+    $('#view').innerHTML = `<div class="card"><h2>Resumo</h2><p>Para montar o resumo, a tabela precisa ter uma coluna de <strong>data</strong> e uma de <strong>valor</strong>. Não identifiquei ${!roles.date?'a de data':'a de valor'}.</p></div>`;
+    return;
+  }
+  const {y, m} = state.month;
+  const prev = m === 0 ? {y:y-1, m:11} : {y, m:m-1};
+  const parsed = rows.map(r => ({ r, d: cellToDate(r[roles.date.i]), v: parseNum(r[roles.value.i]) })).filter(x => x.d && !isNaN(x.v));
+  const inMonth = (x, mm) => x.d.getFullYear() === mm.y && x.d.getMonth() === mm.m;
+  const isIncome = x => roles.type ? RX.income.test(String(x.r[roles.type.i])) : false;
+
+  const cur = parsed.filter(x => inMonth(x, state.month));
+  const before = parsed.filter(x => inMonth(x, prev));
+  const exp = cur.filter(x => !isIncome(x)), inc = cur.filter(isIncome);
+  const sum = a => a.reduce((s,x) => s + Math.abs(x.v), 0);
+  const gastos = sum(exp), receitas = sum(inc), gastosAnt = sum(before.filter(x => !isIncome(x)));
+  const delta = gastosAnt ? (gastos - gastosAnt) / gastosAnt : null;
+
+  const byCat = {};
+  exp.forEach(x => { const k = roles.cat ? (String(x.r[roles.cat.i]).trim() || 'Sem categoria') : 'Gastos'; byCat[k] = (byCat[k]||0) + Math.abs(x.v); });
+  const cats = Object.entries(byCat).sort((a,b) => b[1]-a[1]);
+  const max = cats.length ? cats[0][1] : 0;
+
+  const recent = [...cur].sort((a,b) => b.d - a.d).slice(0, 12);
+
+  $('#view').innerHTML = `
+    <div class="monthnav">
+      <button id="mPrev" aria-label="Mês anterior">‹</button>
+      <strong>${MESES[m]} ${y}</strong>
+      <button id="mNext" aria-label="Próximo mês">›</button>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="k">Gastos no mês</div><div class="v">${fmtBRL(gastos)}</div>
+        <div class="d">${delta==null ? 'sem dados do mês anterior' : `${delta>0?'▲':'▼'} ${Math.abs(delta*100).toFixed(0)}% vs ${MESES[prev.m]}`}</div></div>
+      ${roles.type ? `
+      <div class="tile"><div class="k">Receitas</div><div class="v">${fmtBRL(receitas)}</div><div class="d">${inc.length} lançamento(s)</div></div>
+      <div class="tile"><div class="k">Saldo</div><div class="v" style="color:${receitas-gastos>=0?'var(--good)':'var(--bad)'}">${fmtBRL(receitas-gastos)}</div><div class="d">receitas − gastos</div></div>`
+      : `<div class="tile"><div class="k">Lançamentos</div><div class="v">${cur.length}</div><div class="d">no mês</div></div>`}
+    </div>
+    <div class="card">
+      <h2>${roles.cat ? 'Gastos por ' + esc(roles.cat.name.toLowerCase()) : 'Gastos'}</h2>
+      ${cats.length ? `<div class="bars">${cats.map(([k,v]) => `
+        <div class="row" title="${esc(k)}: ${fmtBRL(v)} (${(v/gastos*100).toFixed(1)}%)">
+          <div class="lbl ellipsis">${esc(k)}</div>
+          <div class="track"><div class="fill" style="width:${(v/max*100).toFixed(1)}%"></div></div>
+          <div class="val num">${fmtBRL(v)} · ${(v/gastos*100).toFixed(0)}%</div>
+        </div>`).join('')}</div>` : '<p class="muted">Nenhum gasto neste mês.</p>'}
+    </div>
+    <div class="card">
+      <h2>Últimos lançamentos</h2>
+      ${recent.length ? `<ul class="list">${recent.map(x => `
+        <li><div class="grow">
+          <div class="ellipsis">${esc(roles.desc ? x.r[roles.desc.i] : '') || '—'}</div>
+          <div class="muted ellipsis">${x.d.toLocaleDateString('pt-BR')}${roles.cat && x.r[roles.cat.i] ? ' · ' + esc(x.r[roles.cat.i]) : ''}</div>
+        </div><div class="num" style="${isIncome(x)?'color:var(--good)':''}">${isIncome(x)?'+':''}${fmtBRL(Math.abs(x.v))}</div></li>`).join('')}</ul>`
+      : '<p class="muted">Nada lançado neste mês.</p>'}
+    </div>
+    <button class="btn ghost block" id="btnReload">Atualizar dados da planilha</button>`;
+
+  $('#mPrev').onclick = () => { state.month = prev; renderSummary(); };
+  $('#mNext').onclick = () => { state.month = m === 11 ? {y:y+1, m:0} : {y, m:m+1}; renderSummary(); };
+  $('#btnReload').onclick = async () => { loading('Atualizando…'); try { await loadModel(); renderMain(); } catch(e){ showError(e); } };
+}
+
+function showSettings(){
+  $('#btnSettings').classList.add('hidden');
+  const { cols, roles } = state.model || { cols:[], roles:{} };
+  const roleOf = c => [['date','data'],['value','valor'],['cat','categoria'],['type','tipo (receita/despesa)'],['desc','descrição']].filter(([k]) => roles[k] === c).map(([,l]) => l).join(', ');
+  app.innerHTML = `
+    <div class="card">
+      <h2>Configurações</h2>
+      <p><strong>Planilha:</strong> ${esc(state.file && state.file.name)}<br><strong>Tabela:</strong> ${esc(state.table && state.table.name)}</p>
+      <div class="row-actions">
+        <button class="btn ghost" id="sFile">Trocar planilha</button>
+        <button class="btn ghost" id="sTable">Trocar tabela</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Como o painel entendeu as colunas</h2>
+      <ul class="list">${cols.map(c => `<li><div class="grow"><strong>${esc(c.name)}</strong> <span class="muted">${c.formula ? 'fórmula' : {date:'data', number:'número', text:'texto'}[c.kind]}</span></div><span class="muted">${esc(roleOf(c))}</span></li>`).join('')}</ul>
+    </div>
+    <div class="card">
+      <p class="muted">URI de redirecionamento deste painel: <code>${esc(REDIRECT_URI)}</code></p>
+      <div class="row-actions"><button class="btn ghost" id="sBack">Voltar</button><button class="btn ghost" id="sOut">Sair da conta</button></div>
+    </div>`;
+  $('#sFile').onclick = () => { $('#btnSettings').classList.remove('hidden'); showFilePicker(); };
+  $('#sTable').onclick = () => { $('#btnSettings').classList.remove('hidden'); state._forcePick = true; showTablePicker(); };
+  $('#sBack').onclick = () => renderMain();
+  $('#sOut').onclick = logout;
+}
+$('#btnSettings').onclick = () => state.model ? showSettings() : null;
+
+/* ================== INICIALIZAÇÃO ================== */
+async function boot(){
+  try {
+    await handleRedirect();
+  } catch(e){ return showLogin(e.message); }
+  if (!store.get('tok')) return showLogin();
+  try {
+    let me = store.get('me');
+    if (!me){ me = await graph('/me?$select=displayName,userPrincipalName'); store.set('me', me); }
+    $('#who').textContent = (me.displayName || '').split(' ')[0];
+    if (!state.file) return showFilePicker();
+    if (!state.table) return showTablePicker();
+    loading('Lendo os lançamentos…');
+    await loadModel(); renderMain();
+  } catch(e){ showError(e); }
+}
+boot();
+</script>
+</body>
+</html>
