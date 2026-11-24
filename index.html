@@ -82,6 +82,15 @@
   .bars .fill{height:100%;background:var(--bar);border-radius:0 4px 4px 0;min-width:2px}
   .bars .lbl{font-size:14px}
   .bars .val{font-size:13px;color:var(--ink-2)}
+  .tick{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--surface);
+    color:transparent;font-size:16px;font-weight:800;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .tick.on{background:var(--good);border-color:var(--good);color:#fff}
+  .tick:disabled{opacity:.5}
+  li.paid .grow > div:first-child{color:var(--muted)}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:middle}
+  .cardhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .cardhead h2{margin:0}
+  .linkbtn{background:none;border:0;color:var(--accent);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:6px 0}
   .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;
     background:#14213d;color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;
     transition:.25s;z-index:20;max-width:90vw;text-align:center;pointer-events:none}
@@ -140,6 +149,9 @@ const app = $('#app');
 const norm = s => String(s ?? '').trim().toLowerCase();
 const isBlank = v => v === '' || v == null || (typeof v === 'string' && !v.trim());
 const round2 = n => Math.round(n * 100) / 100;
+/* Marca de "pago" — fica no começo da descrição, visível também no Excel (ex.: "✔ Enel") */
+const PAID = '✔ ';
+const PAID_RX = /^\s*[✔✓]\uFE0F?\s*/;
 
 function toast(msg, isErr=false){
   const t = $('#toast'); t.textContent = msg; t.classList.toggle('err', isErr);
@@ -307,7 +319,8 @@ function parseControle(g){
     const items = [];
     for (let r = rg.r1; r <= rg.r2; r++){
       const desc = String(g.v(r,c+1)).trim(), val = g.v(r,c+3);
-      if (desc || !isBlank(val)) items.push({ r, day: g.v(r,c), desc, cat: String(g.v(r,c+2)).trim(), val: numOr0(val) });
+      if (desc || !isBlank(val)) items.push({ r, day: g.v(r,c), raw: String(g.v(r,c+1)), paid: PAID_RX.test(desc),
+        desc: String(g.v(r,c+1)).replace(PAID_RX, '').trim(), cat: String(g.v(r,c+2)).trim(), val: numOr0(val) });
     }
     months[m] = { c, r1: rg.r1, r2: rg.r2, items,
       free: firstFree(g, rg.r1, rg.r2, [c+1, c+2, c+3]),
@@ -531,8 +544,8 @@ async function buildPlan(load){
     if (!blk) return { error: `Não achei o bloco de ${MESES[m-1]} na aba Controle ${y}.` };
     if (!blk.free) return { error: `O bloco de ${MESES[m-1]} está cheio até a linha do TOTAL MES. Insira linhas em branco antes dela no Excel.` };
     const value = /receita/i.test(cat) ? v : -v;
-    return { rows: [{ sheet, c1: blk.c, c2: blk.c+3, r: blk.free, values: [d, desc, cat, value] }],
-      text: `Entra em <strong>Controle ${y} › ${MESES[m-1]}</strong>, linha ${blk.free}, como <strong>${fmtBRL(value)}</strong>.` };
+    return { rows: [{ sheet, c1: blk.c, c2: blk.c+3, r: blk.free, values: [d, PAID + desc, cat, value] }],
+      text: `Entra em <strong>Controle ${y} › ${MESES[m-1]}</strong>, linha ${blk.free}, como <strong>${fmtBRL(value)}</strong>, já marcado como pago.` };
   }
 
   // Cartão
@@ -605,10 +618,33 @@ async function submitEntry(ev){
 }
 
 /* ================== RESUMO ================== */
+async function setPaid(sheet, blk, item, paid){
+  const addr = `${colStr(blk.c+1)}${item.r}`;
+  // confere se a linha ainda é a mesma antes de gravar (evita marcar a linha errada se a planilha mudou)
+  const cur = await graph(`${wsPath(sheet.ws)}/range(address='${addr}')?$select=values`);
+  const curText = String((cur.values && cur.values[0] && cur.values[0][0]) ?? '');
+  if (curText.replace(PAID_RX, '').trim() !== item.desc.trim())
+    throw new Error('Essa linha mudou na planilha. Toque em "Atualizar dados da planilha" e tente de novo.');
+  const text = paid ? PAID + item.desc : item.desc;
+  await graph(`${wsPath(sheet.ws)}/range(address='${addr}')`, { method:'PATCH', body:{ values:[[text]] } });
+  item.paid = paid; item.raw = text;
+}
+
+const dayNum = i => { const n = parseInt(i.day, 10); return isNaN(n) ? 99 : n; };
+function itemRow(i, opts = {}){
+  const label = i.val > 0 ? 'recebido' : 'pago';
+  return `<li class="${i.paid ? 'paid' : ''}">
+    <button class="tick ${i.paid ? 'on' : ''}" data-r="${i.r}" aria-pressed="${i.paid}" title="${i.paid ? 'Marcado como ' + label + ' — toque para desmarcar' : 'Marcar como ' + label}">✓</button>
+    <div class="grow"><div class="ellipsis">${esc(i.desc || '—')}</div>
+      <div class="muted ellipsis">${i.day !== '' && i.day != null ? 'dia ' + esc(i.day) + ' · ' : ''}${esc(i.cat || 'sem categoria')}${i.paid ? ' · ' + label : ''}</div></div>
+    <div class="num" style="${i.val > 0 ? 'color:var(--good)' : ''}">${i.val > 0 ? '+' : ''}${fmtBRL(Math.abs(i.val))}</div>
+  </li>`;
+}
+
 async function renderSummary(){
   const {y, m} = state.month;
   const view = $('#view');
-  view.innerHTML = `<div class="center"><div class="spinner"></div>Lendo ${MESES[m]}/${y}…</div>`;
+  if (!state.cache[(sheetFor('controle', y)||{}).name]) view.innerHTML = `<div class="center"><div class="spinner"></div>Lendo ${MESES[m]}/${y}…</div>`;
   let ctl, crt;
   try { [ctl, crt] = await Promise.all([loadSheet('controle', y), loadSheet('cartoes', y)]); }
   catch(e){ return showError(e); }
@@ -619,20 +655,25 @@ async function renderSummary(){
       <button id="mNext" aria-label="Próximo mês">›</button>
     </div>`;
   const bindNav = () => {
-    $('#mPrev').onclick = () => { state.month = m === 0 ? {y:y-1, m:11} : {y, m:m-1}; renderSummary(); };
-    $('#mNext').onclick = () => { state.month = m === 11 ? {y:y+1, m:0} : {y, m:m+1}; renderSummary(); };
+    $('#mPrev').onclick = () => { state.month = m === 0 ? {y:y-1, m:11} : {y, m:m-1}; state.showAll = false; renderSummary(); };
+    $('#mNext').onclick = () => { state.month = m === 11 ? {y:y+1, m:0} : {y, m:m+1}; state.showAll = false; renderSummary(); };
   };
   const blk = ctl && ctl.months[m];
   if (!blk){ view.innerHTML = nav + `<div class="card"><p>Não há a aba <strong>Controle ${y}</strong> ou o bloco deste mês.</p></div>`; return bindNav(); }
 
   const items = blk.items.filter(i => i.val !== 0);
+  const saidas = items.filter(i => i.val < 0);
   const receitas = items.filter(i => i.val > 0).reduce((s,i)=>s+i.val,0);
-  const despesas = items.filter(i => i.val < 0).reduce((s,i)=>s-i.val,0);
+  const despesas = saidas.reduce((s,i)=>s-i.val,0);
+  const aPagar = saidas.filter(i => !i.paid).sort((a,b) => dayNum(a)-dayNum(b) || a.r-b.r);
+  const aReceber = items.filter(i => i.val > 0 && !i.paid).sort((a,b) => dayNum(a)-dayNum(b) || a.r-b.r);
+  const faltaPagar = aPagar.reduce((s,i)=>s-i.val,0);
+  const ultimas = [...saidas].sort((a,b) => b.r - a.r);            // ordem em que foram lançadas (mais recentes primeiro)
+  const ultimasVis = state.showAll ? ultimas : ultimas.slice(0, 10);
   const byCat = {};
-  items.filter(i => i.val < 0).forEach(i => { const k = i.cat || 'Sem categoria'; byCat[k] = (byCat[k]||0) - i.val; });
+  saidas.forEach(i => { const k = i.cat || 'Sem categoria'; byCat[k] = (byCat[k]||0) - i.val; });
   const cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
   const maxCat = cats.length ? cats[0][1] : 0;
-  const top = items.filter(i => i.val < 0).sort((a,b)=>a.val-b.val).slice(0, 8);
   const cardBlk = crt && crt.months[m];
   const saldo = blk.total;
 
@@ -640,11 +681,27 @@ async function renderSummary(){
     <div class="tiles">
       <div class="tile"><div class="k">Receitas</div><div class="v">${fmtBRL(receitas)}</div></div>
       <div class="tile"><div class="k">Saídas</div><div class="v">${fmtBRL(despesas)}</div></div>
-      <div class="tile"><div class="k">Saldo do mês</div><div class="v" style="color:${saldo>=0?'var(--good)':'var(--bad)'}">${fmtBRL(saldo)}</div><div class="d">TOTAL MES da planilha</div></div>
-      <div class="tile"><div class="k">Acumulado</div><div class="v" style="color:${(blk.acc||0)>=0?'var(--good)':'var(--bad)'}">${blk.acc==null?'—':fmtBRL(blk.acc)}</div><div class="d">linha TOTAL</div></div>
+      <div class="tile"><div class="k">Falta pagar</div><div class="v" style="color:${faltaPagar>0?'var(--bad)':'var(--good)'}">${fmtBRL(faltaPagar)}</div><div class="d">${aPagar.length ? aPagar.length + ' conta(s) em aberto' : 'tudo pago'}</div></div>
+      <div class="tile"><div class="k">Saldo do mês</div><div class="v" style="color:${saldo>=0?'var(--good)':'var(--bad)'}">${fmtBRL(saldo)}</div><div class="d">acumulado: ${blk.acc==null?'—':fmtBRL(blk.acc)}</div></div>
     </div>
+
+    <div class="card">
+      <div class="cardhead"><h2>A pagar${aPagar.length ? `<span class="pill">${aPagar.length}</span>` : ''}</h2>
+        ${aPagar.length > 1 ? `<button class="linkbtn" id="payAll">Marcar todas como pagas</button>` : ''}</div>
+      ${aPagar.length ? `<ul class="list" data-list="pagar">${aPagar.map(i => itemRow(i)).join('')}</ul>` : '<p class="muted">Nenhuma conta em aberto neste mês.</p>'}
+      ${aReceber.length ? `<h2 style="margin-top:16px">A receber<span class="pill">${aReceber.length}</span></h2><ul class="list">${aReceber.map(i => itemRow(i)).join('')}</ul>` : ''}
+    </div>
+
+    <div class="card">
+      <h2>Últimas saídas</h2>
+      ${ultimas.length ? `<ul class="list">${ultimasVis.map(i => itemRow(i)).join('')}</ul>
+        ${ultimas.length > 10 ? `<button class="linkbtn" id="toggleAll">${state.showAll ? 'Mostrar menos' : `Ver todas (${ultimas.length})`}</button>` : ''}`
+      : '<p class="muted">Nada lançado neste mês.</p>'}
+    </div>
+
     ${cardBlk ? `<div class="card"><h2>Faturas dos cartões</h2><ul class="list">${cardBlk.sections.map(s => `
       <li><div class="grow">${esc(s.name)} <span class="muted">· ${s.items.length} itens</span></div><div class="num">${fmtBRL(Math.abs(s.total))}</div></li>`).join('')}</ul></div>` : ''}
+
     <div class="card">
       <h2>Saídas por categoria</h2>
       ${cats.length ? `<div class="bars">${cats.map(([k,v]) => `
@@ -654,15 +711,34 @@ async function renderSummary(){
           <div class="val num">${fmtBRL(v)} · ${(v/despesas*100).toFixed(0)}%</div>
         </div>`).join('')}</div>` : '<p class="muted">Nenhuma saída neste mês.</p>'}
     </div>
-    <div class="card">
-      <h2>Maiores saídas</h2>
-      ${top.length ? `<ul class="list">${top.map(i => `
-        <li><div class="grow"><div class="ellipsis">${esc(i.desc || '—')}</div><div class="muted">${i.day ? 'dia ' + esc(i.day) + ' · ' : ''}${esc(i.cat || 'sem categoria')}</div></div>
-        <div class="num">${fmtBRL(-i.val)}</div></li>`).join('')}</ul>` : '<p class="muted">Nada lançado.</p>'}
-    </div>
     <button class="btn ghost block" id="btnReload">Atualizar dados da planilha</button>`;
+
   bindNav();
-  $('#btnReload').onclick = async () => { state.cache = {}; renderSummary(); };
+  $('#btnReload').onclick = () => { state.cache = {}; renderSummary(); };
+  const t = $('#toggleAll'); if (t) t.onclick = () => { state.showAll = !state.showAll; renderSummary(); };
+
+  view.querySelectorAll('.tick').forEach(btn => btn.onclick = async () => {
+    const item = blk.items.find(i => i.r === +btn.dataset.r); if (!item) return;
+    const to = !item.paid;
+    view.querySelectorAll(`.tick[data-r="${item.r}"]`).forEach(b => { b.disabled = true; b.classList.toggle('on', to); });
+    try { await setPaid(ctl, blk, item, to); toast(to ? (item.val > 0 ? 'Marcado como recebido ✓' : 'Marcado como pago ✓') : 'Desmarcado'); }
+    catch(e){ if (e.message === 'LOGIN') return showLogin('Sua sessão expirou. Entre de novo.'); toast(e.message, true); }
+    renderSummary();
+  });
+
+  const pa = $('#payAll');
+  if (pa) pa.onclick = async () => {
+    if (!confirm(`Marcar ${aPagar.length} conta(s) de ${MESES[m]} como pagas (${fmtBRL(faltaPagar)})?`)) return;
+    pa.disabled = true;
+    let ok = 0;
+    for (const item of aPagar){
+      pa.textContent = `Marcando ${ok+1}/${aPagar.length}…`;
+      try { await setPaid(ctl, blk, item, true); ok++; }
+      catch(e){ toast(e.message, true); break; }
+    }
+    if (ok) toast(`${ok} conta(s) marcadas como pagas ✓`);
+    renderSummary();
+  };
 }
 
 /* ================== CONFIGURAÇÕES ================== */
